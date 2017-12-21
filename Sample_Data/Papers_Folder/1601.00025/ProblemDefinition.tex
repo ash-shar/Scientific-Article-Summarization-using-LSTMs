@@ -1,0 +1,67 @@
+%!TEX root =  Write_a_classifier.tex
+
+
+Fig~\ref{F:prob_def} illustrates the learning setting. 
+The information in our problem comes from two different domains: the visual domain  and the textual domain, denoted by $\mathcal{V}$ and $\mathcal{T}$, respectively. Similar to traditional visual learning problems, we are given training data in the form $V=\{({x}_i , l_i)\}_{N}$, where $x_i$ is an image and $l_i \in \{1\cdots N_{sc}\}$ is its class label. We denote the number of classes available at training as $N_{sc}$, where $sc$ indicates ``seen classes''. As typically done in visual classification setting, we can learn $N_{sc}$ binary one-vs-all classifiers, one for each of these classes.  
+
+Our goal is to be able to predict a classifier for a new category based only on the learned classes and a textual description(s) of that category. In order to achieve that, the learning process has to also include textual description of the seen classes (as shown in Fig ~\ref{F:prob_def} ). Depending on the domain we might find a few, a couple, or as little as one textual description to each class. We denote the textual training data for class $j$ by $\{t_i\in \mathcal{T} \}^j$. 
+In this paper we assume we are dealing with the extreme case of having only one textual description available per class, which makes the problem even more challenging. For simplicity, the text description of class $j$ is denoted by $t_j$. However, the formulation we propose in this paper directly applies to the case of multiple textual descriptions per class.
+
+
+
+In this paper, we cover predicting  visual classifier ${\Phi}(t_*)$ from an unseen text description $t_*$  in  linear form or RKHS kernalized form, defined as follows 
+
+
+\subsection{Linear Classifier}
+\label{sec_lin_pdef}
+Let us consider a typical \ignore{binary }linear classifier in the feature space in the form
+\[
+    f_j(\mathbf{x}) = \mathbf{c}_j^\textsf{T} \cdot \mathbf{x}
+\] 
+where $\mathbf{x}$ (bold) is the visual feature vector of an image $x$ (not bold) amended with 1   and $\mathbf{c}_j \in \mathbb{R}^{d_v}$ is the linear classifier parameters for class $j$. Given a test image, its class is determined by
+\begin{equation}
+\small
+l^* = \arg \max_j f_j(\mathbf{x})
+\label{eq:mclass}
+\end{equation}
+  
+ Similar to the visual domain, the raw textual descriptions have to go through a feature extraction process\ignore{, which will be described in Sec~\ref{experiments}}. Let us denote the linear extracted textual feature by 
+$T=\{\mathbf{t}_j \in \mathbb{R}^{d_t}\}_{j=1\cdots N_{sc}}$, where $\mathbf{t}_j$ is the features of text description $t_j$ (not bold).  Given a textual description ${t}_*$  of a new unseen category $\mathcal{U}$  with linear feature vector representation $\mathbf{t}_*$, the problem can now be defined as predicting a one-vs-all linear classifier parameters ${\Phi}{(t_*)} = c(\mathbf{t}_*) \in \mathbb{R}^{d_v}$,  such that it can be directly used to classify any test image $\mathbf{x}$ as 
+\begin{eqnarray}
+      c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} >  0 & \text{if} \;  \mathbf{x} \; \text{belongs to} \;\mathcal{U} \nonumber \\
+      c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} <  0 &  \text{otherwise} \label{E:PredictedClass}
+\end{eqnarray}
+
+%$c(\mathbf{t}_*)$ is detailed in Sec~\ref{formulation}. 
+
+\subsection{Kernel Classifier}
+\label{sec_kernel_pdef}
+For kernel classifiers, we assume that each of the domains is equipped with a kernel function corresponding to a \textit{reproducing kernel Hilbert space} (RKHS). Let us denote the kernel for $\mathcal{V}$ by $k(\cdot,\cdot)$, and the kernel for $\mathcal{T}$ by $g(\cdot,\cdot)$. %At the zero-shot time,  \ignore{information  is presented as \small$D_{test} = \{ \mathcal{S}_x^*= \{ {x}^*_j \}_{N'}, \mathcal{S}_e^* = \{ y^*_j, {e}_{y^*_j} \}_{N_{us}} \}$\normalsize, where  \small${x}^*_j \in \mathcal{X}$\normalsize, \small$y^*_j \in {Y}_{us}$\normalsize (test/unseen labels), \small$\mathcal{S}_x^*$\normalsize is  a set of \small$N'\,$\normalsize test points in \small$\mathcal{X}$\normalsize domain, and privileged information \small$\mathcal{S}_e^*\,$\normalsize is available for the unseen classes and \small${e}_{y^*_j} \in \mathcal{E}$\normalsize.}only the text description    ${t}_{*}$ is available for each novel unseen class.
+\ignore{Since, we are studying explicit kernel-classifier prediction from privileged information, we first present an overview on multi-class classification on kernel space.  One} 
+\normalsize 
+
+%The  common approach for multi-class classification is to learn a classifier for each class against the remaining classes (i.e. one-vs-all). 
+According to the generalized representer theorem~\cite{rth01},  a minimizer of a regularized empirical risk function over an RKHS could be represented as a linear combination of kernels, evaluated on the training set. Adopting the representer theorem on classification risk function, we define a kernel-classifier of a visual class $j$ as follows
+
+
+\begin{equation}
+\small
+\begin{split}
+f_j({x})=&   \sum_{i=1}^{N} \beta_j^i k({x}, {x}_i) + b  = \sum_{i=1}^{N} \beta_j^i \varphi({x_i})^\textsf{T} \varphi( {x}) + b \\
+f_j({x})=&  {\boldsymbol{\beta}_j}^\textsf{T} \cdot  \textbf{k}({x}) =  \mathbf{c}_j^\textsf{T} \cdot [\varphi(x); 1] , \mathbf{c}_j =  [\sum_{i=1}^{N} \beta_j^i \varphi({x_i}); b]\\
+%&, 
+\end{split}
+\label{eq_fkernel}
+\end{equation}
+where ${x} \in \mathcal{V}$ is the test image, ${x}_i$ is the $i^{th}$ image in the training data $V$,  $\textbf{k}({x})= [k({x}, {x}_1), \cdots, k({x}, {x}_N), 1]^\textsf{T},$  $\boldsymbol{\beta}_j = [\beta_j^1 \cdots \beta_j^N, b]^\textsf{T} $. Having learned $f_j({x}^*)$ for each class $j$ (for example using SVM classifier), the class label of the test image ${x}$ can be predicted by  Eq.~\ref{eq:mclass}, similar to the linear case. Eq.~\ref{eq_fkernel} also shows how $\boldsymbol{\beta}_j$ is related to $\mathbf{c}_j$ in the linear classifier, where $k(x, x')= \varphi(x)^\mathsf{T} \cdot \varphi(x')$ and $\varphi(\cdot)$ is a feature map  that does not have to be defined given $k(\cdot, \cdot)$ on $\cal{V}$. Hence, our goal in the kernel classifier prediction  is to predict $\boldsymbol{\beta}(t_*)$ instead of $\mathbf{c}(t_*)$ since it is sufficient to define  ${f}_{t_*}(x)$ for a text description $t_*$ of an unseen class given $\mathbf{k}(x)$
+
+%\small
+%\begin{equation}
+%  l^* = \arg \max_k f_k(\mathbf{x}^*)
+%  \label{eq:mclass}
+%\end{equation}
+%\normalsize
+
+\ignore{Under our setting, i}It is clear that $f_j({x})$ could be learned for  all classes with training data $j \in  {1} \cdots {N_{sc}}$, since there are examples for the seen classes; we denote the kernel-classifier parameters of the seen classes as $\mathcal{B}_{sc} =  \{  \boldsymbol{\beta}_j \}_{N_{sc}}, \forall j$. However, it is not obvious how to predict $f_{{t}_*}({x})$ for an unseen class given its text description ${t}_*$. Similar to the linear classifier prediction, our main notion is to use the text description ${t}_{*}$, associated with unseen class, and the training data to directly predict the unseen kernel-classifier parameters. In other words, the kernel classifier parameters of the unseen class is a function of  its text description ${t}_*$ , the image training data $V$ and the text training data $\{t_j\}, j\in 1 \cdots N_{sc}$; \ie \small
+\[   f_{{t}_*}({x}) = \boldsymbol{\beta}({t}_*)^\textsf{T} \cdot \textbf{k}({x}), \] \normalsize
+ $ f_{{t}_*}({x})$ could be used to classify new points that	 belong to an  unseen class as follows: 1) one-vs-all setting  $f_{{t}_*}({x})  \gtrless  0$  \ignore{if ${x}^*\,$  belongs to unseen category $z^*$, $\boldsymbol{\beta}(\mathbf{t}_*),)^\textsf{T} \cdot \textbf{k}(x^*)< 0$  otherwise}; or 2) in a Multi-class prediction as in Eq~\ref{eq:mclass}. ${\Phi}(t_*)$ in this case is $\boldsymbol{\beta}({t}_{*})$. In contrast to linear classifier prediction, there is no need to explicitly represent an image $x$ or a text description $t$ by features, which are denoted by the bold symbols in the previous section. Rather, only the  $k(\cdot,\cdot)$  and $g(\cdot,\cdot)$ needs to be defined which is general. 

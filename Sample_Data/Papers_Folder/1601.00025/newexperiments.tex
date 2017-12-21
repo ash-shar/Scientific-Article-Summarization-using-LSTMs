@@ -1,0 +1,303 @@
+%!TEX root =  Write_a_classifier.tex
+
+%This section presents the datasets, the features, the experimental setting, evaluation methodology, and the experimental results.  %on Flower (102 classes)~\cite{Flower08} and CU-UCSD Bird Dataset (200 classes)~\cite{CU20010}.
+
+\subsection{Datasets and Features}
+\label{ss_ds_feats}
+%\subsubsection{Datasets}
+\noindent{\bf Datasets:}
+We used  the CU200 Birds~\cite{CU20010} (200 classes - 6033 images) and the Oxford Flower-102~\cite{Flower08} (102 classes - ~8189 images) image dataset to test our methods, since they are among the largest and widely used fine-grained datasets.  We created  textual descriptions for each class in both datasets. The CUB200 Birds image dataset was created based on birds that have a corresponding Wikipedia article, so we have developed a tool to automatically extract Wikipedia articles given the class name. The tool succeeded to automatically generate 178 articles, and the remaining 22 articles was extracted manually from Wikipedia. These mismatches happens only when article title is a different synonym of the same bird class. On the other hand, Flower image dataset was not created using the same criteria as the Bird dataset, so classes of the Flower dataset classes does not necessarily have corresponding Wikipedia article. The tool managed to generate only 16 classes from Wikipedia out of 102, the remaining 86 articles was generated manually for each class from Wikipedia, Plant Database  \footnote{http://plants.usda.gov/java/}, Plant Encyclopedia \footnote{http://www.theplantencyclopedia.org/wiki/Main$\_$Page}, and BBC articles \footnote{http://www.bbc.co.uk/science/0/}. The collected textual description for FLower and Birds dataset are available here  \url{https://sites.google.com/site/mhelhoseiny/1202-Elhoseiny-sup.zip} .
+
+\noindent{\bf Textual Feature Extraction:}
+The textual features were extracted in two phases, which are typical in document retrieval literature. The first phase is an indexing phase that generates textual features with tf-idf (Term Frequency-Inverse Document Frequency) configuration (Term frequency as local weighting while inverse document frequency as a global weighting). The tf-idf is a measure of how important is a word to a text corpus. The tf-idf value increases proportionally to the number of times a word appears in the document, but is offset by the frequency of the word in the corpus, which helps to control for the fact that some words are generally more common than others. We used the normalized frequency of a term in the given textual description~\cite{salton1988term}. The inverse document frequency is a measure of whether the term is common; in this work we used the standard logarithmic idf~\cite{salton1988term}.   
+The second phase is a dimensionality reduction step, in which  Clustered Latent Semantic Indexing (CLSI) algorithm~\cite{clsi05} is used. CLSI is a low-rank approximation approach for dimensionality reduction, used for document retrieval. In the Flower Dataset, tf-idf features $\in \mathbb{R}^{8875}$ and after CLSI the final textual features $\in \mathbb{R}^{102}$. In the Birds Dataset, tf-idf features is in $\mathbb{R}^{7086}$ and after CLSI the final textual features is in $\mathbb{R}^{200}$. 
+
+\begin{comment}
+\begin{table}
+\scalebox(0.8){
+\begin{tabular}{| c | c | c | c |}
+\hline
+\small
+& \begin{minipage}[t]{0.22\columnwidth}%
+tf-idf Features dimensions 
+\end{minipage}  & \begin{minipage}[t]{0.17\columnwidth}CLSI Cluster count \end{minipage} & \begin{minipage}[t]{0.21\columnwidth}Reduced Dimensions \end{minipage}\\
+\hline
+\begin{minipage}[c]{0.17\columnwidth}Birds Dataset \end{minipage}&7086 & 200 & 200 \\
+\hline 
+\begin{minipage}[c]{0.17\columnwidth}Flower Dataset \end{minipage}&8875 & 102 & 102 \\
+\hline
+\end{tabular}}
+\caption{Textual features specifications}
+\label{clsiTextFsTable}
+\end{table}
+
+\end{comment}
+
+%\subsubsection{Visual features}
+\noindent{\bf  Visual features Extraction:}
+We used the Classeme features~\cite{classemes} as the visual feature for our experiments since they provide an intermediate semantic representation of the input image. Classeme features are output of a set of classifiers corresponding to a set of $C$ category labels, which are drawn from an appropriate term list defined in~\cite{classemes}, and not related to our textual features. For each category $c \in \lbrace 1 \cdots C \rbrace $, a set of training images is gathered by issuing a query on the category label to an image search engine.
+After a set of coarse feature descriptors (Pyramid HOG, GIST, \etc) is extracted, a subset of feature dimensions was selected~\cite{classemes}, and  a one-versus-all classifier $\varphi_{c}$ is trained for each category. The classifier output is real-valued, and is such that $\varphi_{c}(x) > \varphi_{c}(y)$ implies that $x$ is more similar to class $c$ than $y$ is. Given an image $x$,  the feature vector (descriptor) used to represent it is the classeme vector $  [\varphi_{1} (x),  \cdots, \varphi_{d_v} (x)]$, $d_v=2569$.
+
+For Kernel classifier prediction, we evaluated  these features and also additional representations  for text descriptions (by the proposed distributional semantic kernel using word embedding) and  images ( (a) CNN features and (b)  combined kernel over different features learnt by MKL (multiple kernel learning)), discussed later in Subsection~\ref{ss_exp_kernel}.
+
+%\subsubsection{Extracting Textual Features}
+ 
+
+\begin{figure*}[ht!]
+\centering
+\hspace{-10mm}
+\begin{minipage}{0.33\textwidth}
+  \centering
+\includegraphics[width=1.1\linewidth,height=.75\linewidth]{birds_top10_ROC_final.eps}
+%\vspace{-3mm}
+\end{minipage}%
+\hspace{-3mm}
+\begin{minipage}{0.33\textwidth}
+  \centering
+ \includegraphics[width=1.1\linewidth,height=.75\linewidth]{flower_top10_ROC_final.eps}
+ %\vspace{-3mm}
+\end{minipage}
+\begin{minipage}{0.33\textwidth}
+  \centering
+\includegraphics[width=1.1\linewidth,height=.75\linewidth]{flower_AUC_imp_final.eps}
+%\vspace{-5mm}
+\end{minipage}
+\vspace{-1mm}
+\caption{Linear : \textbf{Left and Middle}: ROC curves of best 10 predicted classes by the final formulation (E) for Bird  and Flower datasets respectively, \textbf{Right}: AUC improvement over the three baselines on Flower dataset (Formulations A (GPR), A (TGP), C). The improvement is sorted in an increasing order for each baseline separately (best seen in color)}
+\vspace{-2mm}
+\label{fig:result3fig}
+\end{figure*}
+
+
+\begin{table*}[b!]
+\small
+\centering
+\caption{ Linear: Comparative Evaluation of Different Formulations on the Flower and Bird Datasets}
+\label{T:AUC}
+%\vspace{-10pt}
+\scalebox{1.0}{
+\begin{tabular}{|l|l|l|}
+  \hline
+  		&  Oxford Flowers   & UC-UCSD Birds   \\
+  Approach  & Avg AUC (+/- std) & Avg AUC (+/- std)\\ 
+  \hline
+  \hline
+  (A) Regression - GPR & 0.54 (+/- 0.02) & 0.52 (+/- 0.001) \\ 
+  (A) Structured Regression - TGP & 0.58 (+/- 0.02) & 0.61 (+/- 0.02)\\
+  (C)  Domain Transfer(DT) &  0.62(+/- 0.03)  &  0.59 (+/- 0.01)\\
+  \hline 
+  (B) Constrained GPR & 0.62(+/- 0.005) & - \\
+  (B) Constrained TGP & 0.63(+/- 0.007) & - \\
+  (D) Constrained Domain Adaptation (CDT) on Eq~\ref{eq:form} & 0.64 (+/- 0.006)& -  \\
+       \hline
+  (E) Regression+DT + constraints (final best linear approach) & {0.68} (+/- 0.01) & { 0.62} (+/- 0.02) \\
+      \hline
+\end{tabular}}
+%\vspace{-10pt}
+%\end{table}
+%\begin{table}[t]
+%\small
+%\caption{\small Top-5 classes with highest combined improvement }
+%\label{T:top5improv}
+%\centering
+%\vspace{-5pt}
+\ignore{
+{
+\scalebox{0.7}{
+\begin{tabular}{|l|l|l|l|l|}
+  \hline
+  \multicolumn{5}{c}{Top-5 Classes with highest combined improvement} \\
+  \hline
+  \hline
+  class      &  (A) TGP (AUC) & (C) DT (AUC) & (D) TGP+DT+C  & \% Improv. \\
+  \hline
+  \hline
+   2   &  0.51 & 0.55 & 0.83 & 57\% \\  
+   28 & 0.52 & 0.54 & 0.76 &  43.5\% \\
+   26 &  0.54 & 0.53 & 0.76 & 41.7\% \\
+   81 & 0.52 & 0.82 & 0.87   & 37\%  \\
+   37 & 0.72 & 0.53 & 0.83   & 35.7 \% \\
+  \hline 
+\end{tabular}}
+}}
+%\vspace{-5pt}
+\end{table*}
+
+\subsection{Experimental Results for Linear Classifier Prediction}
+
+
+\noindent{\bf Evaluation Methodology:} Similar to zero-shot learning literature, we evaluated the performance of an unseen classifier in a one-vs-all setting where the test images of unseen classes are considered to be the positives and the test images from the seen classes are considered to be the negatives. We computed the ROC curve and report the area under that curve (AUC) as a comparative measure of different approaches. In zero-shot learning setting the test data from the seen class are typically very large compared to those from unseen classes. This makes other measures, such as accuracy, useless since high accuracy can be obtained even if all the unseen class test data are wrongly classified; hence we used ROC curves, which are independent of this problem. Five-fold cross validation over the classes were performed, where in each fold 4/5 of the classes are considered as ``seen classes'' and are used for training and 1/5th of the classes were considered as ``unseen classes'' where their classifiers are predicted and tested. Within each of these class-folds, the data of the seen classes are further split into training and test sets. The hyper-parameters for the  approach were selected through another five-fold cross validation within the class-folds  (i.e. the $80\%$ training classes are further split into $5$ folds to select the hyper-parameters). We made the seen-unseen folds used in our experiments available here \url{https://sites.google.com/site/mhelhoseiny/computer-vision-projects/Write_a_Classifier}.
+
+\noindent{\bf Baselines:}
+Since our work is the first to predict classifiers based on pure textual description, there are no other reported results to compare against. However, we designed three state-of-the-art baselines to compare against, which are designed to be inline with our argument in Sec~\ref{obvformulation}. Namely we used: 1) A Gaussian Process Regressor (GPR)~\cite{Rasmussen:2005}, 2) Twin Gaussian Process (TGP)~\cite{Bo:2010} as a structured regression method, 3)  Domain Transfer (DT)~\cite{da11}. The TGP and DT baselines are of particular importance since our formulation utilizes them, so we need to test if the formulation is making any improvement over them. It has to be noted that we also evaluate TGP and DT as alternative formulations that we are proposing for the problem, none of them was used in the same context before. %We  compared these baselines with formulations we proposed in section ~\ref{obvformulation} in including 4) Constrained GPR, 4) Constrained TGP, 5) Constrained DA, and 6) Constrained Regression  and Adaptation (our final approach).   
+
+\begin{comment}
+\begin{table}
+\small
+\centering
+\caption{\small Comparative Evaluation on the Flowers and Birds}
+\label{T:AUC}
+%\vspace{-10pt}
+\scalebox{1.0}{
+\begin{tabular}{|l|l|l|}
+  \hline
+  		&  Flowers   & Birds   \\
+  Approach  & Avg AUC (+/- std) & Avg AUC (+/- std)\\ 
+  \hline
+  \hline
+  GPR  & 0.54 (+/- 0.02) & 0.52 (+/- 0.001) \\ 
+  TGP  & 0.58 (+/- 0.02) & 0.61 (+/- 0.02)\\
+  DT  &  0.62(+/- 0.03)  &  0.59 (+/- 0.01)\\
+  Our Approach & {\bf 0.68} (+/- 0.01) & {\bf 0.62} (+/- 0.02) \\
+  \hline 
+\end{tabular}}
+%\vspace{-10pt}
+\end{table}
+
+\end{comment}
+
+
+
+\noindent{\bf Results:}
+Table~\ref{T:AUC} shows the average AUCs for the final linear approach in comparison to the three baselines on both datasets. GPR performed poorly in all classes in both data sets, which was expected since it is not a structure prediction approach.  The DT formulation outperformed TGP in the flower dataset but slightly underperformed on the Bird dataset. The proposed approach outperformed all the baselines on both datasets, with significant difference on the flower dataset. It is also clear that the TGP performance was improved on the Bird dataset since it has more classes (more points are used for prediction). Fig ~\ref{fig:result3fig} shows the ROC curves for our approach on best predicted unseen classes from the Birds dataset on the Left  and Flower dataset on the middle. Fig ~\ref{F:AUCs} shows the AUC for all the classes on Flower dataset. %More results are attached in the supplementary materials. 
+\begin{comment}
+\begin{figure}
+\includegraphics[width=0.9\linewidth,height=.6\linewidth]{flower_top10_ROC_final.eps}
+%\vspace{-20pt}
+\caption{ROC curves for best predicted classes -- Flower}
+\label{F:bestROCs}
+\end{figure}
+\end{comment}
+\begin{comment}
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth,height=.5\linewidth]{birds_top10_ROC_final.eps}
+%\vspace{-14pt}
+\caption{ROC curves for best predicted classes -- Birds}
+\label{F:bestROCsBIRDS}
+%\vspace{-5pt}
+\end{figure}
+\end{comment}
+\begin{comment}
+\begin{figure}
+\centering
+\begin{minipage}{.45\textwidth}
+  \centering
+\includegraphics[width=0.43\linewidth,height=.4\linewidth]{birds_top10_ROC_final.eps}
+	(a)
+\end{minipage}%
+\begin{minipage}{.45\textwidth}
+  \centering
+ \includegraphics[width=0.43\linewidth,height=.4\linewidth]{flower_top10_ROC_final.eps}
+ (b)
+\end{minipage}
+\end{figure}
+\begin{figure}
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=0.4\linewidth,height=.4\linewidth]{flower_top10_ROC_final.eps}
+                \caption{A gull}
+                \label{fig:gull}
+        \end{subfigure}\hspace{-20mm}
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=0.4\linewidth,height=.4\linewidth]{birds_top10_ROC_final.eps}
+                \caption{A tiger}
+                \label{fig:tiger}
+        \end{subfigure}
+        \caption{Pictures of animals}
+        \label{fig:animals}
+\end{figure}
+%\begin{center}
+\end{comment}
+
+
+%\end{center}
+
+
+
+\begin{table}[t]
+\small
+\caption{\small Linear: Percentage of classes that the final proposed approach (formulation (E)) makes an improvement in predicting over the baselines (relative to the total number of classes in each dataset}
+\label{T:classimprov}
+%\vspace{-10pt}
+\centering
+\scalebox{1.0}{
+\begin{tabular}{|l|l|l|}
+  \hline
+  		&  Flowers (102)  & Birds (200)\\ 
+ baseline      &  \%  improvement & \%  improvement\\  
+  \hline
+  \hline
+  (A) GPR  & 100 \% & 98.31 \% \\ 
+  (A) TGP  & 66 \% & 51.81 \%\\
+  (C) DT  &   54\% &  56.5\% \\
+  %TGP+DA & 65\% &  55.45 \% \\
+  \hline 
+\end{tabular}}
+%\vspace{-5pt}
+\end{table}
+\begin{comment}
+\begin{figure}[t]
+\includegraphics[width=0.95\linewidth,height=.5\linewidth]{flower_AUC_imp_final.eps}
+%\vspace{-10pt}
+\caption{AUC improvement over the three baselines. The improvement are sorted in a decreasing order for each baseline separately. }
+\label{F:AUC_improvement}
+\end{figure}
+\end{comment}
+Fig ~\ref{fig:result3fig}, on the right, shows the improvement over (A) GPR,\begin{figure}
+\vspace{-3mm}
+\centering
+ \hspace*{-12mm}%
+\includegraphics[width=1.24\linewidth,height=.27\linewidth]{flower_AUC_for_all_classes_final.eps}
+%\vspace{-15pt}
+\caption{Linear: AUC of the predicated classifiers for all classes of the flower datasets (Formulation E)}
+\label{F:AUCs}
+\end{figure} A(TGP), and (C) DT for each class, where the improvement is calculated as (our AUC- baseline AUC)/ baseline AUC \%. 
+Table~\ref{T:classimprov} shows the percentage of the classes which our approach makes a prediction improvement for each of  the three baselines\begin{comment}. The last row show the improvement over both the TGP and DT baseline 
+\end{comment}
+. Table~\ref{T:top5improv} shows the five classes in Flower dataset where our approach made the best average improvement.
+\begin{comment}. (TGP+DT).  
+\end{comment}
+ The point of that table is to show that in these cases both TGP and DT did poorly while our formulation that is based on both of them did significantly better. This shows that our formulation does not simply combine the best of the two approaches but can significantly improve the prediction performance.
+
+\begin{table}[t]
+\small
+\caption{\small Linear: Top-5 classes with highest combined improvement in Flower dataset}
+\label{T:top5improv}
+\centering
+%\vspace{-5pt}
+{
+\scalebox{0.85}{
+\begin{tabular}{|l|l|l|l|l|}
+  \hline
+  class      &  (A) TGP (AUC) & (C) DT (AUC) & (E) Our (AUC)  & \% Improv. \\
+  \hline
+  \hline
+   2   &  0.51 & 0.55 & 0.83 & 57\% \\  
+   28 & 0.52 & 0.54 & 0.76 &  43.5\% \\
+   26 &  0.54 & 0.53 & 0.76 & 41.7\% \\
+   81 & 0.52 & 0.82 & 0.87   & 37\%  \\
+   37 & 0.72 & 0.53 & 0.83   & 35.7 \% \\
+  \hline 
+\end{tabular}}
+}
+\vspace{-2pt}
+\end{table}
+
+
+
+
+
+
+
+To evaluate the effect of the constraints in the objective function, we removed the constraints $- (\mathbf{c}^\textsf{T} {\mathbf{x}}_{i} ) \geq \zeta_i$ which try to enforces all the seen examples to be on the negative side of the predicted classifier hyperplane and evaluated the approach. The result on the flower dataset (using one fold) was reduced to average AUC=0.59 compared to AUC=0.65 with the constraints. Similarly, we evaluated the effect of the constraint  $\mathbf{t}_*^\textsf{T} \mathbf{W} \mathbf{c} \ge l$. The result was reduced to average AUC=0.58 compared to AUC=0.65 with the constraint.  This illustrates the importance of this constraint in the formulation.
+
+\noindent{\bf Constrained Baselines:}
+%\textbf{different formulations experiments:}
+\ignore{We computed the ROC curves and report the area under that curve (AUC) as a comparative measure\footnote{In zero-shot learning setting the test data from the seen class are typically very large compared to those from unseen classes. This makes other measures, such as accuracy, useless since high accuracy can be obtained even if all the unseen class test data are wrongly classified; hence we used ROC curves, which are independent of this problem.} Five-fold cross validation over the classes were performed, within each of these class-folds, the data of the seen classes are further split into training and test sets.}
+Table~\ref{T:AUC} (bottom three lines) also shows the average AUCs for the constrained baselines formulations, namely Constrained GPR, TGP and DT; see section~\ref{formulation}. Even though the visual features and textual features were independently extracted, by learning correlation between them, we can predict classifiers for new categories. As shown previously, GPR performed poorly, while, as expected, TGP performed better. Adding constraints to GPR/TGP improved their performance. Combining regression and DT gave significantly better results for classes where both approaches individually perform poorly, as can be seen in Table~\ref{T:AUC}-right. We performed an additional experiment, where  $\mathbf{W}$ is firstly computed using Constrained Domain Transfer (CDT). Then, the unseen classifier is predicted using equation~\ref{eq:form} with $\gamma=0$, which performs worse. This indicates that adding constraints to align to seen classifiers hurts the learnt domain transfer function on unseen classes. In conclusion, the final formulation that combines TGP and DT with additional constraints performs the best in both Birds and Flower datasets, where the effect of TGP is very limited since it was trained on sparse points. 
+
+%\begin{float}
+
+
+
+\input{Knewexperiments}

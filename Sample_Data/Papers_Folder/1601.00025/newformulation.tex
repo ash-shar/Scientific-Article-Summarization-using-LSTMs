@@ -1,0 +1,174 @@
+%!TEX root =  Write_a_classifier.tex
+The proposed formulations in this section aims at predicting a linear hyperplane parameter $\mathbf{c}$ of a one-vs-all classifier for a new unseen class given a textual description, encoded as a feature vector $\mathbf{t_*}$ and the knowledge learned at the training phase from seen classes\footnote{The notations follow from Subsection~\ref{sec_lin_pdef}}. We start by  defining the learning components that were used by the formulations described in this section:
+
+\begin{description}
+\item [Classifiers:]$\,\,\,\,\,\,\,\,$ 
+
+a set of linear one-vs-all classifiers $\{\mathbf{c}_j\}$ are learned, one for each seen class.
+\item [Probabilistic Regressor:] $\,\,\,\,\,\,\,\,\,\,\,\,$
+
+Given $\{(\mathbf{t}_j,\mathbf{c}_j)\}$ a regressor is learned that can be used to give a prior estimate for $p_{reg}(\mathbf{c} | \mathbf{t})$ (Details in Sec~\ref{S:Reg}).
+\item [Domain Transfer:]$\,\,\,\,\,\,\,\,\,\,\,\,$ 
+
+Given $T$ and $V$ a domain transfer function, encoded in the matrix $\mathbf{W}$ is learned, which captures the correlation between the textual and visual domains (Details in Sec~\ref{S:DA}).
+\end{description} 
+  
+  
+  
+Each of the following subsections show a different approach to predict a linear classifier from $t_*$ as $\Phi(t_*) = \mathbf{c}(\textbf{t}_*)$; see Sec~\ref{sec_lin_pdef}. The final approach (E) combines  regression, domain transfer, and additional constraints, which achieves the best performance. We compare between these alternative formulations in our experiments. Hyper-parameter selection is detailed in the supplementary materials for all the approaches. % regression (A), constrained regression (B), domain transfer (C), (D) constrained regression and domain transfer,  and (E)  constrained domain transfer. Our best final formulation (E) combines the regression, domain transfer function, and additional constraints to achieve better performance.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=1.0\linewidth,height=.38\linewidth]{fig_NLP4.pdf}
+\vspace{-10pt}
+\caption{Illustration of the Proposed Linear Prediction Framework (Constrained Regression and Domain Transfer) for the task Zero-shot learning from textual description (Linear Formulation (E))}
+\label{F:prob_sol}
+\vspace{-12pt}
+\end{figure*}
+
+\subsection{Probabilistic Regressor}
+\label{S:Reg}
+There are different regressors that can be used, however we need a regressor that provide a probabilistic estimate $p_{reg}(\mathbf{c} | \mathbf(t))$. For the reasons explained in Sec~\ref{obvformulation}, we also need a structure prediction approach that is able to predict all the dimensions of the classifiers together. For these reasons, we use the Twin Gaussian Process (TGP)~\cite{Bo:2010}. 
+TGP encodes the relations between both the inputs and structured outputs using Gaussian Process priors. This is achieved by minimizing the Kullback-Leibler divergence between the marginal GP of the outputs (i.e. classifiers in our case) and observations (i.e. textual features). The estimated regressor output ($\tilde{c}(\mathbf{t}_*)$) in TGP is given by the solution of the following non-linear optimization problem~\cite{Bo:2010} \footnote{notice we are using $\mathbf{\tilde{c}}$ to denote the output of the regressor, while using $\mathbf{\hat{c}}$ to denote the output of the final optimization problem in Eq~\ref{eq:form}}.
+\begin{equation}                                               
+\centering
+\begin{split}
+{\Phi (t_*)} = \tilde{c}(\mathbf{t}_*) = & \underset{\mathbf{c}}{\operatorname{argmin}}[  K_C(\mathbf{c},\mathbf{c})  -2 k_c(\mathbf{c})^\textsf{T} \mathbf{u} - \eta  \log ( \\ & K_C(\mathbf{c},\mathbf{c} -k_c(\mathbf{c})^\textsf{T} (\mathbf{K}_C+ \lambda_c \mathbf{I})^{-1} k_c(c) ) ]
+\end{split}
+\label{eq:tgp}
+\end{equation}
+where $\mathbf{u} = (\mathbf{K}_\textsf{T} + \lambda_t  \mathbf{I})^{-1} k_t(\mathbf{t}_*)$, $\eta  = K_T(\mathbf{t}_*,\mathbf{t}_*) -k(\mathbf{t}_*)^\textsf{T}  \mathbf{u} $,  $K_T(\mathbf{t}_l,\mathbf{t}_m) $ and $K_C(\mathbf{c}_l,\mathbf{c}_m)$ are Gaussian kernel for input feature $\mathbf{t}$ and output vector $\mathbf{c}$.  $k_c(\mathbf{c}) = [K_C(\mathbf{c},\mathbf{c}_1), \cdots, K_C($ $\mathbf{c},\mathbf{c}_{N_{sc}})]^\textsf{T}$. $k_t(\mathbf{t}_*) = [K_T(\mathbf{t}_*,\mathbf{t}_1), \cdots, K_T(\mathbf{t}_*,\mathbf{t}_{N_{sc})}]^\textsf{T}$.  $\lambda_t$ and $\lambda_c$ are regularization parameters to avoid overfitting. This optimization problem can be solved using a second order, BFGS quasi-Newton optimizer with cubic polynomial line search for optimal step size selection~\cite{Bo:2010}. In this case the classifier dimension are predicted jointly. In this case $p_{reg}(\mathbf{c}|\mathbf{t}_*)$ is defined as a normal distribution.
+\begin{equation}
+\label{eq:ptgp}
+p_{reg}(\mathbf{c}|\mathbf{t}_*) =  \mathcal{N} (\mu_c = \tilde{c}(\mathbf{t}_*),\Sigma_c = \mathbf{I})
+\end{equation}
+The reason that $\Sigma_c = \mathbf{I}$ is that TGP does not provide predictive variance, unlike Gaussian Process Regression. However, it has the advantage of handling the dependency between the dimensions of the classifiers $\mathbf{c}$ given the textual features $\mathbf{t}$. 
+ 
+\subsection{Constrained Probabilistic Regressor}
+\label{S:Reg_con}
+We also investigated formulations that use regression to predict an initial hyperplane  $\tilde{c}(\mathbf{t}_*)$ as described in section ~\ref{S:Reg}, which is then optimized to put all seen data in one side, \ie
+\begin{equation*}
+\begin{split}
+ {\Phi (t_*)} = \small \hat{c}(\mathbf{t}_*) =   \underset{\mathbf{c},\zeta_i}{\operatorname{argmin }}[  \mathbf{c}^\textsf{T} \mathbf{c}  + \alpha \, \psi( \mathbf{c},\tilde{c}(\mathbf{t}_*)) + C   \sum_{i=1}^N{\zeta_i} ] \\ \; s.t.:  -\mathbf{c}^\textsf{T} {\mathbf{x}}_{i}  \geq \zeta_i , \; \zeta_i \geq 0 , i=1,\cdots,N 
+\end{split}
+\end{equation*}
+
+where $\psi(\cdot,\cdot)$ is a similarity function between hyperplanes, \eg a dot product used in this work,  $\alpha$ is its constant weight, and $C$ is the weight to the soft constraints of existing images as negative examples (inspired by linear SVM formulation)\ignore{, or other functions incorporating the predictive variance}. We call this class of methods {\em constrained GPR/TGP}, since $\tilde{c}(\mathbf{t}_*)$ is initially predicted through GPR or TGP. 
+ 
+
+
+\subsection{Domain Transfer (DT)}
+\label{S:DA}
+To learn the domain transfer function $\mathbf{W}$ we adapted the approach in~\cite{da11} as follows. Let $\mathbf{T}$ be the textual feature data matrix and $\mathbf{X}$ be the visual feature data matrix where each feature vector is amended with a 1. Notice that amending the feature vectors with a 1 is essential in our formulation since we need $\mathbf{t}^\textsf{T} \mathbf{W}$ to act as a classifier. We need to solve the following optimization problem 
+\begin{equation}
+  \min_{\mathbf{W}}  r(\mathbf{W}) + \lambda \sum_i c_i(\mathbf{T} \mathbf{W} \mathbf{X}^\textsf{T})
+  \label{Eq:DA1}
+\end{equation}
+%where $c_i$'s are loss functions over the constraints and $r(\cdot)$ is a matrix regularizer.  It was shown in~\cite{da11}, under condition on the regularizer, that the optimal $\mathbf{W}$ in Eq~\ref{Eq:DA1} can be computed using inner products between data points in each of the domains separately, which results in a kernalized non-linear transfer function; hence its complexity does not depend on the dimensionality of either of the domains. The optimal solution of~\ref{Eq:DA1} is in the form
+where $c_i$'s are loss functions over the constraints and $r(\cdot)$ is a matrix regularizer.  It was shown in~\cite{da11}, under condition on the regularizer, that the optimal $\mathbf{W}$  is in the form of 
+ $ \mathbf{W}^* = \mathbf{T} \mathbf{K}_{T}^{-\frac{1}{2}} \mathbf{L}^*  \mathbf{K}_{X}^{-\frac{1}{2}} \mathbf{X}^\textsf{T}$, where  $\mathbf{K}_{T}  = \mathbf{T} \mathbf{T}^\textsf{T}$,  $\mathbf{K}_{X}  = \mathbf{X} \mathbf{X}^\textsf{T}$.   $\mathbf{L}^*$ is computed by minimizing the following minimization problem
+\begin{equation}
+ \underset{\mathbf{L}}{\operatorname{min       }}[   r(\mathbf{L})+ \lambda \sum_p c_p(\mathbf{K}_{T}^{\frac{1}{2}} \mathbf{L} \mathbf{K}_{X}^\frac{1}{2}  ) ],
+\end{equation}
+where $c_p(\mathbf{K}_{T}^{\frac{1}{2}} \mathbf{L} \mathbf{K}_{X}^\frac{1}{2}  ) = (max(0, (l-e_i \mathbf{K}_{T}^{\frac{1}{2}} \mathbf{L} \mathbf{K}_{X}^\frac{1}{2} e_j) ))^2$ for same class pairs of index $i$,$j$, or $ =(max(0, (e_i \mathbf{K}_{T}^{\frac{1}{2}} \mathbf{L} \mathbf{K}_{X}^\frac{1}{2} e_j -u) ))^ 2$ otherwise, where $e_k$ is a one-hot vector of zeros except a one at the $k^{th}$ element, and $u>l$ (note any appropriate $l$, $u$ could work. In our case, we used $l =2$, $u=-2$ ). We used a Frobenius norm regularizer.  This energy is minimized using a second order BFGS quasi-Newton optimizer. Once $L$ is computed $\textbf{W}^*$ is computed using the transformation above. Finally ${\Phi (t_*)}  = c(\mathbf{t}_*) = \mathbf{t}_*^\textsf{T}\mathbf{W}$, simplifying  $\textbf{W}^*$ as $\textbf{W}$.  
+
+
+
+
+\subsection{Constrained-DT}
+We also investigated constrained-DT formulations that learns a transfer matrix $\mathbf{W}$ and  enforce $\mathbf{t}_j^\textsf{T}\mathbf{W}$ to be close to the classifiers learned on seen data, $\{\mathbf{c}_j \}$ ,\ie
+\[\small \min_{\mathbf{W}}  r(\mathbf{W}) + \lambda_1 \sum_i c_i(\mathbf{T} \mathbf{W} \mathbf{X}^\textsf{T}) +\lambda_2 \sum_k{(\mathbf{c}_j - \mathbf{t}^\textsf{T}_j \mathbf{W})^T (\mathbf{c}_j - \mathbf{t}^\textsf{T}_j \mathbf{W})}
+\]
+A classifier can be then obtained by ${\Phi (t_*)}  =c(\mathbf{t}_*)= \mathbf{t}_*^\textsf{T}\mathbf{W}$.
+%A classifier can be obtained by optimizing an objective similar to Eq~\ref{Eq:Opt1} without the regression to obtain ${\Phi (t_*)}  = c(\mathbf{t}_*)$
+
+\begin{comment}
+
+\begin{equation}
+\small
+\begin{split}
+ {\Phi (t_*)} = \small \hat{c}(\mathbf{t}_*) =   \underset{\mathbf{c},\zeta_i}{\operatorname{argmin }}[    \mathbf{c}^\textsf{T} \mathbf{c} - \alpha {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c}  - \gamma  
+ \ln p_{reg}(\mathbf{c}|\mathbf{t}_*)
+  \\ +\gamma   \sum_{i=1}^N{\zeta_i} ]\, ; s.t.:  -\mathbf{c}^\textsf{T} {\mathbf{x}}_{i}  \geq \zeta_i , \; \zeta_i \geq 0 , \; {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c} \geq l 
+ \label{Eq:Opt1}
+ \end{split}
+ \end{equation}
+The first term is a regularizer over the classifier $\mathbf{c}$.  The second term enforces that the predicted classifier has high correlation with $\mathbf{t}_*^\textsf{T} \mathbf{W}$. The third term favors a classifier that aligns with the prediction of the regressor $\tilde{c}(\mathbf{t}_*)$. The constraints $\mathbf{c}^\textsf{T} {\mathbf{x}}_{i} \geq \zeta_i $  enforce that all  seen data instances are at the negative side of the predicted hyperplane with some missclassification allowed through the  slack variables $ \zeta_i$. The constraint $ {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c} \geq l$ enforces that the correlation between the predicted classifier and ${\mathbf{t}_*}^\textsf{T} \mathbf{W}$ is no less than $l$, \ie a minimum correlation between the text and visual features. 
+Given $\mathbf{W}$, and the form of the probability estimate $ p_{reg}(\mathbf{c}|\mathbf{t}_*)$, the optimization reduces to a quadratic program on $\mathbf{c}$ with linear constraints.
+\end{comment}
+
+\subsection{Constrained  Regression and Domain Transfer for classifier prediction}
+ Fig~\ref{F:prob_sol} illustrates our final  framework which combines regression (formulation A (using TGP)) and domain transfer (formulation C) with additional constraints. This formulation combines the three learning components described in the beginning of this section. 
+%At the training phase three components are learned:
+%\begin{description}
+%\item [Classifiers:] a set of one-vs-all classifiers $\{\mathbf{c}_k\}$ are learned, one for each seen class.
+%\item [Probabilistic Regressor:] Given $\{(\mathbf{t}_k,\mathbf{c}_k)\}$ a regressor is learned that can be used to give a prior estimate for $p_{reg}(\mathbf{c} | \mathbf{t})$ (Details in Sec~\ref{S:Reg}).
+%\item [Domain Transfer Function:] Given $T$ and $V$ a domain transfer function, encoded in the matrix $\mathbf{W}$ is learned, which captures the correlation between the textual and visual domains (Details in Sec~\ref{S:DA}).
+%\end{description} 
+Each of these components contains partial knowledge about the problem. The question is how to combine such knowledge to predict a new classifier given a textual description. The new classifier has to be consistent with the seen classes. 
+The new classifier has to put all the seen instances at one side of the hyperplane, and has to be consistent with the learned domain transfer function. This leads to the following constrained  optimization problem 
+\begin{equation}
+\begin{split}
+ {\Phi (t_*)} = \hat{c}(\mathbf{t}_*) =  &   \underset{\mathbf{c},\zeta_i}{\operatorname{argmin }}\big[    \mathbf{c}^\textsf{T} \mathbf{c} - \alpha {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c}  - \gamma  \ln( p_{reg}(\mathbf{c}|\mathbf{t}_*))  \\
+& + C   \sum{\zeta_i} \big]\\
+&s.t.:  -(\mathbf{c}^\textsf{T} {\mathbf{x}}_{i} ) \geq \zeta_i ,  \,\, \zeta_i \geq 0 ,\; \; i = 1 \cdots N \\
+&	   \,\, {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c} \geq l     \\
+& \alpha , \gamma, C, l \,  \text{: hyperparameters}\\ 
+\end{split}
+\label{eq:form}
+\end{equation}
+The first term is a regularizer over the classifier $\mathbf{c}$.  The second term enforces that the predicted classifier has high correlation with $\mathbf{t}_*^\textsf{T} \mathbf{W}$; $\mathbf{W}$ is learnt by Eq~\ref{Eq:DA1}. The third term favors a classifier that has high probability given the prediction of the regressor. The constraints $ -\mathbf{c}^\textsf{T} {\mathbf{x}}_{i} \geq \zeta_i $  enforce all the seen data instances to be at the negative side of the predicted classifier hyperplane with some missclassification allowed through the  slack variables $ \zeta_i$. The constraint $ {\mathbf{t}_*}^\textsf{T} \mathbf{W} \mathbf{c} \geq l$ enforces that the correlation between the predicted classifier and ${\mathbf{t}_*}^\textsf{T} \mathbf{W}$ is no less than $l$, this is to enforce a minimum correlation between the text and visual features. 
+
+
+%>>> add ones to the vectors. when learning W
+
+
+%The optimization problem above is a quadratic program on $\mathbf{c}$ with linear constraints. We tried different quadratic solvers, however CPLEX IBM solver \footnote{http://www-01.ibm.com/software/integration/optimization/cplex-optimizer} gives best performance in speed and optimization.
+
+
+%%%%
+
+\textbf{Solving for $\hat{c}$ as a quadratic program: }
+According to  the definition of $p_{reg}(\mathbf{c}|\mathbf{t}_*)$ for  TGP,  $\ln p(\mathbf{c}|\mathbf{t}_*)$ is a quadratic term in $c$ in the form  
+\begin{equation}
+\begin{split}
+-\ln p(\mathbf{c}|\mathbf{t}_*) \propto ( \mathbf{c} - \tilde{c}(\mathbf{t}_*))^\textsf{T} (\mathbf{c} - \tilde{c}(\mathbf{t}_*)) \\= \mathbf{c}^\textsf{T} \mathbf{c} -2 \mathbf{c}^\textsf{T} \tilde{c}(\mathbf{t}_*) +  \tilde{c}(\mathbf{t}_*)^\textsf{T} \tilde{c}(\mathbf{t}_*) 
+\end{split}
+\label{eq:lnptgp}
+\end{equation}
+We reduce $-\ln p(\mathbf{c}|\mathbf{t}_*)$ to $-2 \mathbf{c}^\textsf{T} \tilde{c}(\mathbf{t}_*))$, since 1) $\tilde{c}(\mathbf{t}_*)^\textsf{T} \tilde{c}(\mathbf{t}_*)$ is a constant (\ie does not affect the optimization), 2) $\mathbf{c}^\textsf{T} \mathbf{c}$ is already included as regularizer in equation ~\ref{eq:form}.  In our setting, the dot product  is a better similarity measure between two hyperplanes. Hence,  $-2 \mathbf{c}^\textsf{T} \tilde{c}(\mathbf{t}_*)$ is minimized.
+Given $-\ln p(\mathbf{c}|\mathbf{t}_*)$ from the TGP and  $\mathbf{W}$, Eq~\ref{eq:form} reduces to a quadratic program on $\mathbf{c}$ with linear constraints. We tried different quadratic solvers, however the IBM CPLEX solver \footnote{http://www-01.ibm.com/software/integration/optimization/cplex-optimizer} gives the best performance in speed and optimization for our problem.
+
+
+%\noindent{\bf Formulations:}
+%We investigated several formulations for predicting classifier parameters $c(\mathbf{t}_*)$ for a new class with textual description $\mathbf{t}_*$, in the form of a linear one-vs-all classifier, \ie,
+%$c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} >  0  \; \text{if} \;  \mathbf{x} \; \text{belongs to} \;\mathcal{C} $ and $c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} <  0   \;\; \text{otherwise}$.  Recall that the features are amended with 1 such that $c(\mathbf{t}_*)$ is hyperplane paramterization. Table~\ref{T:AUC} shows results of different formulations, which will be details next.
+%\begin{eqnarray}
+%      c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} >  0 & \text{if} \;  \mathbf{x} \; \text{belongs to} \;\mathcal{C} \nonumber \\
+%      c(\mathbf{t}_*)^\textsf{T} \cdot \mathbf{x} <  0 &  \text{otherwise} \label{E:PredictedClass}
+%\end{eqnarray}
+
+%\medskip
+%\noindent{\em Regression Models:} Given classifiers learned on seen classes, with hyperplanes  $\{\mathbf{c}_k\}$, and the corresponding textual features $\{\mathbf{t}_k\}$, we can learn a regression function $c(\cdot) : \mathbb{R}^{d_t} \rightarrow \mathbb{R}^{d_v} $ from $ \mathcal{T}$ to $ \mathcal{V}$. We investigated Gaussian Process Regression (GPR)~\cite{Rasmussen:2005} and structured regression using the Twin Gaussian Processes (TGP)~\cite{Bo:2010}.  However such regression model will only learn the correlation between the textual and visual domain through the information available in its input-output pairs, \ie  $(\mathbf{t}_k,\mathbf{c}_k)$.  Here the visual domain information is encapsulated in the pre-learned classifiers, and prediction does not have access to the original data in the visual domain. Another problem, is the sparsity of the data; the number of training classes is typically much less than the dimension of the visual and textual feature spaces. 
+%We also investigated formulations that use regression to predict an initial hyperplane  $\tilde{c}(\mathbf{t}_*)$, which is then optimized to put all seen data in one side, \ie
+%\begin{equation*}
+%\begin{split}
+% \small \hat{c}(\mathbf{t}_*) =   \underset{\mathbf{c},\zeta_i}{\operatorname{argmin }}[  \mathbf{c}^\textsf{T} \mathbf{c}  + \alpha \, ( \mathbf{c},\tilde{c}(\mathbf{t}_*)) + \beta\,   \sum_{i=1}^N{\zeta_i} ] \\ \; s.t.:  -\mathbf{c}^\textsf{T} {\mathbf{x}}_{i}  \geq \zeta_i , \; \zeta_i \geq 0 , i=1,\cdots,N 
+%\end{split}
+%\end{equation*}
+
+%where $(\cdot,\cdot)$ is a similarity function between hyperplanes, \eg a dot product, or other functions incorporating the predictive variance. We call this class of methods {\em constrained GPR/TGP} in Table~\ref{T:AUC}.
+%Instead we need to directly learn the correlation between the visual and textual domain and use that for prediction.
+
+%\medskip
+%\noindent{\em Domain Adaptation (DA) Models:} 
+%Another formulation is to pose the problem as domain adaptation from the textual to the visual domain. In particular, in~\cite{da11} an approach for learning cross domain transformation was introduced, by learning a regularized asymmetric transformation between points in two domains. The approach was applied to transfer learned categories between different visual domains. A particular attractive characteristic of~\cite{da11} is that the source and target domains do not have to share the same feature spaces or dimensionality. Inspired by~\cite{da11},  we adapt a model that learns a linear transfer function $\mathbf{W}$ between $\mathcal{T}$ and $\mathcal{V}$.  The matrix $\mathbf{W}$ can be learned  by optimizing, with a suitable regularizer, over constraints of the form $\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \geq l $ if $\mathbf{t} \in \mathcal{T}$  and $\mathbf{x}\in \mathcal{V}$  belong to the same class, and $\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \leq u $  otherwise. Here $l$ and $u$ are model parameters. This transfer function acts as a compatibility function between the textual and visual features. Given a textual feature $\mathbf{t}_*$ and a test image, represented by feature vector $\mathbf{x}$, a classification decision can be obtained by $\mathbf{t}_*^\textsf{T}\mathbf{W}\mathbf{x} \gtrless b$ where $b$ is a decision boundary which can be set to $(l+u)/2$. Therefore, $c(\mathbf{t}_*) = \mathbf{t}_*^\textsf{T}\mathbf{W} $ is the desired predicted classifier. There is no guarantee that such a classifier will put all the seen data on one side and the new unseen class on the other side of that hyperplane. 
+%\medskip
+%\noindent{\em Regression+Domain Adaptation:} Each of the regression and domain adaptation models captures partial information about the problem. Therefore, we investigated several objective functions that combines a learned domain correlation matrix $\mathbf{W}$ and a structure predictor to generate a classifier predictor.  The new classifier has to be consistent with the seen classes and put all the seen instances at one side of the hyperplane. It has also to be consistent with the learned domain transfer function. This leads to the following constrained  optimization problem 
+
+
+
+%\medskip
+%\noindent{\em Constrained-DA}
+
+

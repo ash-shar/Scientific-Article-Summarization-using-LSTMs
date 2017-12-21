@@ -1,0 +1,69 @@
+%!TEX root =  Write_a_classifier.tex
+
+We focus our related work discussion on three related lines of research: ``zero/few-shot learning'', ``visual knowledge transfer'', and ``Language and Vision''.
+
+
+%In general, knowledge transfer aims at enhancing recognition by exploiting shared knowledge between classes. This can come in different ways. Sharing knowledge can by achieved by enforcing a hierarchical structure on the classes, general to specific. Such hierarchy is used to impose constraints on the classifier parameters.  Such hierarchies can be exported from text domain, e.g., WordNet, or learned from visual features.  Our work can be seen in this context, where, we use learned visual classifiers and textual information to learn across-domain correlation that facilitates the prediction of visual classifiers for unseen classes. 
+
+\textbf{Zero/Few-Shot Learning: }Similar to the setting of zero-shot learning, we use classes with training data (seen classes) to predict classifiers for classes with no training data (unseen classes).  Recent works on zero-shot learning of object categories focused on leveraging knowledge about common attributes and shared parts~\cite{Lampert09}.  Typically, attributes ~\cite{babak,Farhadi09}  are manually defined by humans and are used to transfer knowledge between seen and unseen classes.  In contrast, in our work we do not use any explicit attributes. The description of a new category is purely textual and the process is totally automatic without human annotation beyond the class labels.
+
+
+Motivated by the practical need to learn visual classifiers of rare categories, researchers have explored approaches for learning from a single image (one-shot learning~\cite{Miller2000,fe2003bayesian,Fink04,BartU05}) or even from no images (zero-shot learning).
+One way of recognizing object instances from previously unseen test categories
+(the zero-shot learning problem) is by leveraging knowledge about common attributes and shared parts.
+Typically an intermediate semantic layer is introduced to enable sharing knowledge between classes and facilitate describing knowledge about novel unseen classes, \eg~\cite{Palatucci09}.
+ For instance, given adequately labeled training data, one can learn classifiers for the attributes occurring in the training object categories. These classifiers can then be used to recognize the same attributes in object instances from the novel test categories. Recognition can then proceed on the basis of these learned attributes~\cite{Lampert09, Farhadi09}. Such attribute-based ``knowledge transfer'' approaches use an intermediate visual attribute representation to enable describing unseen object categories. Typically attributes are manually defined by humans to describe shape, color, surface material, \eg, furry, striped, \etc  Therefore, an unseen category has to be specified in terms of the used vocabulary of attributes.  Rohrbach \etal~\cite{rohrbach10eccv} investigated extracting useful attributes from large text corpora. In~\cite{ParikhG11},  an approach was introduced for interactively defining a vocabulary of attributes that are both human understandable and visually discriminative. Huang \etal~\cite{Huang_2015_CVPR} relaxed the attribute independence assumption by modeling correlation between attributes to achieve better zero shot performance, as opposed to prior models. 
+ In contrast, our work does not use any explicit attributes. The description of a new category is purely textual. 
+ 
+ 
+
+\textbf{Visual Knowledge Transfer: }Our proposed work can be seen in the context of knowledge sharing and inductive transfer. 
+In general, knowledge transfer aims at enhancing recognition by exploiting shared knowledge between classes. Most existing research focused on knowledge sharing within the visual domain only, \eg~\cite{griffin2008learning}; or exporting semantic knowledge at the level of category similarities and hierarchies, \eg~\cite{fergus2010semantic,Salakhutdinov11}.  We go beyond the state-of-the-art to explore cross-domain knowledge sharing and transfer. We explore how knowledge from the visual and textual domains can be used to learn across-domain correlation, which facilitates prediction of visual classifiers from textual description.  
+
+
+%Another promising knowledge transfer direction is based on learning an intermediate layer of visual attributes that are shared among different classes. An object class is then defined as a combination of attributes using a class-attribute association matrix. For example~\cite{} uses web text mining to generate such association.    
+
+%For the task of zero shot learning, Bart and Ullman \cite{BartU05} provided a set of similar object classes for a new class by finding nearest neighbors with similarity measure defined as the class confidence as output of classifiers for known object classes. Another group of works transfer knowledge of known classes by acquiring learned distance matrices \cite{Fink04} or by estimating object class priors \cite{Yu2010} or by defining functions over feature spaces \cite{Palatucci09}.
+
+
+%Also the majority of zero-shot learning approaches focus on dataset with as a small number of categories (\eg animal dataset with 50 categories); instead we address the problem in the context of fine-grained recognition.
+
+
+\textbf{Language and Vision:} The relation between linguistic semantic representations and visual recognition have been explored. For example in~\cite{deng2010does}, it was shown that there is a strong correlation between semantic similarity between classes, based on WordNet, and confusion between classes. Linguistic semantics in terms of nouns from WordNet \cite{wordNet95} have been used in collecting large-scale image datasets such as ImageNet\cite{imNet09} and Tiny Images~\cite{tinyimages}. It was also shown that hierarchies based on WordNet are useful in learning visual classifiers, \eg~\cite{Salakhutdinov11}.
+
+
+
+%There have been some work on finding concepts and attributes for visual recognition through online text mining.  
+
+
+One of the earliest work on learning from images and text corpora is the work of Barnard \etal~\cite{barnard2001clustering}, which showed that learning  a joint distribution of words and visual elements facilitates clustering the images in a semantic way, generating illustrative images from a caption, and generating annotations for novel images.
+There has been an increasing recent interest in the intersection between computer vision and natural language processing with researches that focus on generating textual description of images and videos, \eg~\cite{farhadi2010every,kulkarni2011baby,yang2011corpus,krishnamoorthy2013generating}. This includes generating sentences about objects, actions, attributes, patial relation between objects, contextual information in the images, scene information, \etc
+        ~In contrast, our work is different in two fundamental ways. In terms of the goal, we do not target generating textual description from images, instead we target  predicting classifiers from text, in a zero-shot setting. In terms of the learning setting, the textual descriptions that we use is at the level of the category  and do not come in the form of image-caption pairs, as in typical datasets used for text generation from images, \eg~\cite{ordonez2011im2text}. Recent impressive works has been proposed for image captioning (e.g., ~\cite{karpathy2014deep,vinyals2015show,xu2015show,mao2015deep}), which are based on the success of sequence to sequence training of neural nets 
+%in  machine translation systems 
+for translation 
+(e.g.,~\cite{cho2014learning}).  In contrast, our work focus on a different  setting, which is  transforming an Encyclopedia text description to visual classifier.
+
+
+There are several recent works that involved unannotated text\ignore{ \cite{NIPS13DeViSE,NIPS13CMT,Hoseini13}}.  In \cite{NIPS13DeViSE} and ~\cite{NIPS13CMT},  word  embedding language models (\eg ~\cite{wvecNIPs13}) was adopted to represent class names as vectors which requires training using a  big text-corpus. Their goal is to embed images into the language space then perform classification. There are several differences between these works and our method. First, one limitation of the adopted language model is that it produces only one vector per word, which produces problems when a word has multiple meanings.  Second, it can not represent a big text description of a class instead of a single or few words or others forms that could be ambiguous. Third,  our goal is different which is to map the text description to a classifier in the visual domain, \ie the apposite direction of their goal. Forth, these models do not support non-linear classification, supported by the kernelized version proposed in this work\ignore{, which is supported by our method}. We finally focus on fine-grained recognition, which is very  challenging\ignore{; see figure~\ref{fig:problem}}.  %Furthermore, focusing on the fine-grained settings makes it important. 
+
+
+
+We can summarize the features of our proposed framework in contrast to prior work as follows: 1) Our framework explicitly predicts classifiers; 2) The predicted classifiers could be linear or  kernelized; 3) The approach requires the text description at the class level, not at the image level, hence, it needs only weak annotation. %4) While we focus on unstructured text description, we showed in one experiment that our approach could be used in attribute representation per class instead of text. %, allowing the use of continuous attributes and we do not require a confidence function for each attribute given the image and our models do not assume independence between attributes. 
+
+
+%The rest of this paper is organized as follows. Section~\ref{obvformulation} presents the problem definition. Section~\ref{formulation} presents different methods for linear classifier prediction models from pure text description. Section~\ref{Knewapproach3_g2} presents a kernelized version of the final approach. Finally, section ~\ref{experiments} presents the experimental evaluation for the proposed formulations.  
+
+%For example~\cite{} uses text sources like É to discover semantic relatedness among object categories which is shown to improve recognition. 
+
+%%%
+
+
+%In some other works on zero shot learning the concept of acquired knowledge has been moved from original space of visual features to a higher level space, understandable by humans which is called atribute space.   Attribute based representation of objects have gained an extensive amount of information in computer vision recently. As visual attributes can be learned in a generative framework featuring shared visual aspects of object classes, they can be used for describing objects that have not been seen before. This paradigm has been explored by Farhadi et al \cite{Farhadi09} by moving from object naming to object description. In this way an unseen object can be described by a set of visual attributes while the object is not nameable. In this case they state the problem of zero shot learning by finding nearest neighbors in the space of attributes. Lampert et al \cite{Lampert09} use attributes to manually relate object classes to a set of common attributes. Having this framework they are able to characterize unseen object classes while they have not seen any example of those classes during training. Rohrbach et al \cite{rohrbach10cvpr} acquire this framework and enhance it by moving from manually annotating object by attributes to automatically extracting useful attributes from large text corpora \cite{rohrbach10eccv,rohrbach11cvpr}
+
+%Salakhutdinov et al\cite{Salakhutdinov11} capture the relationship between object classes by a hierarchical model and take advantage of this relationship to empower the classification task for the rare objects. They represent a tree structure to connect object classes to each other and share visual features between object classes that are similar based on this tree. This model can be used for the problem of zero shot learning by learning on top of similar object classes. 
+
+
+
+
+
+

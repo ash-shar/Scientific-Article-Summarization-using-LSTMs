@@ -1,0 +1,43 @@
+We introduce two possible frameworks for this problem and discuss potential limitations for them. In this background section,  we focus on predicting linear classifiers for simplicity, which motivates the the evaluated linear classifier formulations that follow in Sec~\ref{formulation}. 
+
+\subsection{Regression Models}
+A straightforward way to solve this problem is to pose it as a regression problem where the goal is to use the textual data and the learned classifiers, $\{(\mathbf{t}_j,\mathbf{c}_j) \}_{j=1\cdots N_{sc}}$ to learn a regression function from the textual feature domain to the visual classifier domain, \ie, a function $c(\cdot) : \mathbb{R}^{d_t} \rightarrow \mathbb{R}^{d_v} $.  The question is which regression model would be suitable for this problem? and would posing the problem this way give reasonable results?
+
+A typical regression model, such as ridge regression~\cite{ridgeReg70} or Gaussian Process (GP) Regression~\cite{Rasmussen:2005}, learns the regressor to each dimension of the output domain (the parameters of a linear classifier) separately, \ie,  a set of functions $c^i(\cdot) : \mathbb{R}^{d_t} \rightarrow \mathbb{R} $. Clearly this will not capture the correlation between the visual classifier dimensions. Instead, a structured prediction regressor would be more suitable since it would learn the correlation between the input and output domain. However, even a structured prediction model, will only learn the correlation between the textual and visual domain through the information available in the input-output pairs  $(\mathbf{t}_j,\mathbf{c}_j)$.  Here the visual domain information is encapsulated in the pre-learned classifiers and prediction does not have access to the original data in the visual domain. Instead we need to directly learn the correlation between the visual and textual domain and use that for prediction.
+
+Another fundamental problem  that a regressor would face, is the sparsity of the data; the data points are the textual description-classifier pairs, and typically the number of classes can be very small compared to the dimension of the classifier space (\ie $N_{sc} \ll d_v$). In a setting like that, any regression model is bound to suffer from an under fitting problem. This can be best explained in terms of GP regression, where the predictive variance increases in the regions of the input space where there are no data points. This will result in  poor prediction of classifiers at these regions. 
+
+\subsection{Knowledge Transfer Models}
+An alternative formulation is to pose the problem as domain adaptation from the textual to the visual domain. In the computer vision context, domain adaptation work has focused on transferring categories learned from a source domain,  with a given distribution of images, to a target domain with different distribution, \eg, images or videos from different sources~\cite{yang07,saenko10,da11,duan12}. 
+What we need is an approach that learns the correlation between the textual domain features and the visual domain features, and uses that correlation to predict new visual classifier given textual features. 
+
+In particular, in~\cite{da11} an approach for learning cross domain transformation was introduced. In that work a regularized asymmetric transformation between points in two domains were learned. The approach was applied to transfer learned categories between different data distributions, both in the visual domain. A particular attractive characteristic of~\cite{da11}, over other domain adaptation models, is that the source and target domains do not have to share the same feature spaces or the same dimensionality. 
+
+While a totally different setting is studied in ~\cite{da11}, it inspired us to formulate the zero-shot learning problem as a domain transfer problem. This can be achieved by learning a linear transfer function $\mathbf{W}$ between $\mathcal{T}$ and $\mathcal{V}$.  The transformation matrix $\mathbf{W}$ can be learned  by optimizing, with a suitable regularizer, over constraints of the form $\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \geq l $ if $\mathbf{t} \in \mathcal{T}$  and $\mathbf{x}\in \mathcal{V}$  belong to the same class, and $\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \leq u $  otherwise. Here $l$ and $u$ are model parameters. This transfer function acts as a compatibility function between the textual features and visual features, which gives high values if they are from the same class and a low value if they are from different classes. 
+
+%It is not hard to see that this transfer function, learned on seen classes can act as a classifier for unseen classes. Given a textual feature $\mathbf{t}^*$ for an unseen class and a test image $\mathbf{x}$ a classification decision can be obtained by $\mathbf{t}_*^\textsf{T}\mathbf{W}\mathbf{x} \gtrless b$ where $b$ is a decision boundary which can be set to $(l+u)/2$. It is also not hard to see that our desired predicted classifier in Eq~\ref{E:PredictedClass} can be obtained as $c(\mathbf{t}_*) = \mathbf{t}_*^\textsf{T}\mathbf{W} $. 
+
+It is not hard to see that this transfer function can act as a classifier. Given a textual feature $\mathbf{t}^*$ and a test image, represented by $\mathbf{x}$, a classification decision can be obtained by $\mathbf{t}_*^\textsf{T}\mathbf{W}\mathbf{x} \gtrless b$ where $b$ is a decision boundary which can be set to $(l+u)/2$. Hence, our desired predicted classifier in Eq~\ref{E:PredictedClass} can be obtained as $c(\mathbf{t}_*) = \mathbf{t}_*^\textsf{T}\mathbf{W} $ (note that the features vectors are amended with ones).  However, since learning  $\mathbf{W}$ was done over seen classes only, it is not clear how the predicted classifier $c(\mathbf{t}_*)$ will behave for unseen classes. There is no guarantee that such a classifier will put all the seen data on one side and the new unseen class on the other side of that hyperplane. 
+
+
+
+
+
+%\begin{eqnarray}
+%\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \geq l & \text{if} \mathbf{t} \in \mathcal{T}  \text{and} \mathbf{x}\in \mathcal{V}  \text{belong to the same class} \\ 
+%\mathbf{t}^\textsf{T}\mathbf{W}\mathbf{x} \leq u & \text{otherwise}.
+%\end{eqnarray}  
+
+
+%
+
+
+
+%\begin{figure}[h!]
+%  \label{fig:mdlOfrgMdl}
+%  \centering
+%    \includegraphics[width=0.4\textwidth]{mdlOfrgMdl.jpg}
+%   \caption{Model of Regression Models Lack of Data underfitting, The gray level indicate the uncertainty region, black line is the prediction, the blue line is the ground truth model}
+%\end{figure}
+
+

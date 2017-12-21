@@ -1,0 +1,112 @@
+%!TEX root = ZeroShotLearningECCV14.tex
+
+%!TEX root = ZeroShotLearningECCV14.tex
+
+
+
+%We consider a zero-shot multi-class classification setting on domain \small$\mathcal{X}\,$\normalsize  as follows. \ignore{Let  \small${Y} = {Y}_{sc} \cup  {Y}_{us}$\normalsize, where \small${Y}_{sc} =  {l_1 \cdots l_{N_{sc}}}$\normalsize  are training (seen) labels, and \small${Y}_{us} =  {l'_1 \cdots l'_{N_{us}}}$\normalsize  are the test (unseen) labels, \small${Y}_{sc} \cap {Y}_{us} = \emptyset$. $N_{sc}$\normalsize  and \small$N_{us}$\normalsize  are the number of seen classes and unseen classes, respectively. }
+%At training, besides the data points from  \small$\mathcal{X}\,\,$\normalsize  and the class labels, each class is associated with privileged information in a secondary domain  \small$\mathcal{E}$\normalsize , \eg textual description, attribute annotation, \etc We assume that each class, with label \small$y_i \in {Y}_{sc}$\normalsize(training/seen  labels), is associated with privileged information \small$e_i\in\mathcal{E}$\normalsize.  While, our formulation allows multiple pieces of privileged information  per class (\eg multiple class-level textual descriptions), we will use one per class for simplicity. Hence, we denote the training as  \small$\mathcal{D}_{train} =\{ \mathcal{S}_x = \{({x}_i,y_i)\}_N , \mathcal{S}_e = \{ y_j, {e}_j\}_{N_{sc}} \}$\normalsize , where  \small${x}_i \in \mathcal{X}\,$\normalsize,   \small$y_i \in {Y}_{sc}$\normalsize, \small$y_j \in {Y}_{sc}$\normalsize \ignore{. $\mathcal{S}_x$ is a set of $N$ training examples drawn from an  i.i.d. distribution on $\mathcal{X} \times ({Y}_{sc} \subset {Y}) $ space. Similarly, $\mathcal{S}_e$ is drawn from an i.i.d. distribution from $ ({Y}_{sc} \subset {Y}) \times \mathcal{E}$ space. ; the subscript of the set symbol \small$\{.\}_L\,$\normalsize  indicated its length (\ie \small$L = |\{.\}|$\normalsize).}, and \small$N_{sc}\,$\normalsize and  \small$N\,$\normalsize    are the number of the seen classes and the training examples respectively. \ignore{We do not assume that data in either the main domain or the secondary domain come in a vectorized form.}  
+
+
+
+
+
+
+Prediction of ${\Phi (t_*)}  = \boldsymbol{\beta}(t_*)$ (Sec.~\ref{sec_kernel_pdef}), is decomposed into training (domain transfer) and prediction phases, detailed as follows
+\subsection{Kernelized Domain Transfer}
+\label{ss:tr}
+During training, we firstly learn $\mathcal{B}_{sc} = \{ \boldsymbol{\beta}_j \}, j=1\to N_sc$ as SVM-kernel classifiers based on  the training data and defined by $k(\cdot, \cdot)$ visual kernel\ignore{, see Sec~\ref{sec:pdef}}. Then, we learn a kernel domain transfer function to transfer the text description information ${t_*} \in \mathcal{T}$ to kernel-classifier parameters $\boldsymbol{\beta} \in \mathbb{R}^{N+1}$ in $\mathcal{V}$ domain. We call this domain transfer function $\boldsymbol{\beta}_{DA}(t_*)$, which has the form as ${\mathbf{\Psi}}^\textsf{T} {\textbf{g}(t_*)}$, where $\textbf{g}(t_*)  = [g({t_*}, {t}_1) \cdots g({t_*}, {t}_{N_{sc}})]^\textsf{T}$\ignore{, $g({t}, {t}')\,$\normalsize is a kernel function that measures the similarity between ${t}$ and ${t}'$ on  domain $\mathcal{E}$}; $\mathbf{\Psi}$ is an $N_{sc}  \times {N+1}$ matrix, which transforms ${t}$ to  kernel classifier parameters for the class that ${t_*}$ represents.  
+
+
+
+\ignore{Inspired by the domain transfer proposed by~\cite{da11}, w}We aim to learn  $\mathbf{\Psi}$ from $V$ and $\{t_j\}, j=1 \cdots N_{sc}$, such that $\textbf{g}(t)^\textsf{T} \mathbf{\Psi} \textbf{k}(x) > l$ if ${t}$ and  $x\,$ correspond to the same class, $\textbf{g}(t)^\textsf{T} {\mathbf{\Psi}} \textbf{k}(x) < u\,$ otherwise. Here $l\,$ controls similarity lower-bound if $t$ and $x$ correspond to  same class, and $u$ controls similarity upper-bound if $t$ and $x$ belong to different classes. In our setting, the term   ${\mathbf{\Psi}}^\textsf{T} {\textbf{g}(t_j)}$ should act as a classifier parameter for class $j$ in the training data. Therefore,  we introduce  penalization constraints to our minimization function  if  ${\mathbf{\Psi}}^\textsf{T}\,{\textbf{g}(t_j)}$ is distant from $\boldsymbol{\beta}_j \in \mathcal{B}_{sc}$, where ${t}_i$ corresponds to the class that $\boldsymbol{\beta}_i$ classifies.\ignore{Hence,  in order to learn \small${\textbf{T}}\,$\normalsize, we solve the following objective function  Inspired by domain adaptation \footnote{A totally different problem/setting but the optimization methods inspired our solution} optimization methods (\eg \cite{da11}),  we model our solution using the following objective functionInspired by domain adaptation optimization methods (\eg \cite{da11}) }\ignore{ \footnote{A totally different problem/setting but the optimization methods inspired our solution},  in order to learn ${\textbf{T}}$,,} we model the kernel domain transfer function as follows \ignore{by the following objective function}
+\small
+\begin{equation}
+\begin{split}
+{\mathbf{\Psi}^*}= 
+ \arg \min_{{\mathbf{\Psi}}}  L({\mathbf{\Psi}}) = [&\frac{1}{2} r({\mathbf{\Psi}}) + \lambda_1 \sum_k c_k(\mathbf{G}\, {\mathbf{\Psi}}\, \mathbf{K}) + \\ & \lambda_2 \sum_{i=1}^{N_{sc}}{\|\boldsymbol{ \beta}_i - {\mathbf{\Psi}}^\textsf{T}\,{\textbf{g}(t_i)}\|^2} 
+  \end{split}
+  \label{Eq:DA1}
+\end{equation}
+\normalsize
+ where, 
+\small$\mathbf{G}\,\,$\normalsize is an \small$N_{sc} \times N_{sc}\,$\normalsize symmetric matrix, such that both the \small$i^{th}\,$\normalsize   row and the \small$i^{th}\,$\normalsize column are equal to \small$\textbf{g}(t_i)$\normalsize, \small$i=1: N_{sc}$\normalsize; \small$\mathbf{K}\,\,$\normalsize  is an \small$N+1 \times N\,$\normalsize matrix, such that the \small$i^{th}\,$\normalsize column is equal to \small$\textbf{k}(x_i)$\normalsize, \small$x_i, i=1:N$\normalsize.
+\small$c_k$\normalsize's are loss functions over the constraints defined as
+  \small$c_k(\mathbf{G}\, {\mathbf{\Psi}}\, \mathbf{K})) = (max(0, (l-\textbf{1}_i^\textsf{T} \mathbf{G}\, {\mathbf{\Psi}}\, \mathbf{K} \textbf{1}_j) ))^2\,$\normalsize for same class pairs of index \small$i\,$\normalsize and \small$j$\normalsize,  or \small$ =r\cdot(max(0, (\textbf{1}_i^\textsf{T} \mathbf{G}\, {\mathbf{\Psi}}\, \mathbf{K} \textbf{1}_j -u) ))^ 2\,$\normalsize otherwise, where \small$\textbf{1}_i\,$\normalsize is an \small$N_{sc} \times 1\,$\normalsize vector with all zeros except at index \small$i$\normalsize, \small$\textbf{1}_j\,$\normalsize is an \small$N \times 1\,$\normalsize vector with all zeros except at index \small$j$\normalsize. This leads to that   \small$ c_k(\mathbf{G}\, {\mathbf{\Psi}}\, \mathbf{K})) = (max(0, (l-\textbf{g}(t_i)^\textsf{T}\, {\mathbf{\Psi}}\, \textbf{k}(x_j) ))^2\,$\normalsize for same class pairs of index \small$i\,$\normalsize and \small$j$\normalsize, or \small$ =r\cdot(max(0, (\textbf{g}(t_i)^\textsf{T}\, {\mathbf{\Psi}}\,\textbf{k}(x_j) -u) ))^ 2$\normalsize otherwise, where \small$u>l$\normalsize\ignore{ (note any appropriate $l$, $u$ could work in our case we used $l =2$, $u=-2$ )}, \small$r = \frac{nd}{ns}\,$\normalsize such that \small$nd\,$\normalsize and \small$ns\,$\normalsize are the number of pairs \small$(i,j)\,$\normalsize of different classes and similar pairs respectively. \ignore{ \small$r(\cdot)\,$\normalsize is a matrix regularizer;} Finally, we used a Frobenius norm regularizer for \small$r({\mathbf{\Psi}})$\normalsize. 
+
+
+The objective function in Eq ~\ref{Eq:DA1}  controls the involvement of the constraints \small$c_k\,$\normalsize by the term multiplied by \small$\lambda_1$\normalsize, which controls its importance; we call it \small$C_{l,u}({\mathbf{\Psi}})$\normalsize. While, the trained classifiers penalty is captured by the term multiplied by \small$\lambda_2$\normalsize; we call it \small$C_{\beta}({\mathbf{\Psi}})$\normalsize. One important observation on  \small$C_{\beta}({\mathbf{\Psi}})$\normalsize, is that it reaches zero when \small${\mathbf{\Psi}} = \mathbf{G}^{-1} \textbf{B}^\mathsf{T}$\normalsize, where \small$\textbf{B}  = [\boldsymbol{\beta}_1 \cdots \boldsymbol{\beta}_{N_{sc}}]$\normalsize, since it could be rewritten as \small$C_{\beta}({\mathbf{\Psi}}) = \|\textbf{B}^\mathsf{T} - \mathbf{G} \, {\mathbf{\Psi}}  \|_{F}^2$\normalsize.\ignore{ Our intuition is that for the model to have good generalization, the effect of \small$C_{\beta}({\textbf{T}})\,$\normalsize should be  minimal (\ie \small$\lambda_2 \to 0$\normalsize), since this case indicates successful modeling of the transfer from \small$\mathcal{E}\,$\normalsize domain to the kernel-classifier parameters in \small$\mathcal{X}\,$ domain. }
+\ignore{
+In contrast to the linear-classifier restricted approach proposed by Elhoseiny et al    \cite{Hoseini13}, our domain transfer model can transfer any type of classifier of an arbitrary kernel from $\mathcal{T}$ to $\mathcal{V}$. Furthermore, the classifier penalty term was not studied in \cite{Hoseini13}, which is captured here by $C_{\beta}({\textbf{T}})$.}
+
+We minimize \small$L({\mathbf{\Psi}})\,$\normalsize is by gradient-based optimization using a \ignore{second order BFGS }quasi-Newton optimizer. Our  gradient derivation of \small$L({\mathbf{\Psi}})\,$\normalsize leads to the following form
+\small
+\begin{equation}
+%\begin{split}
+\frac{\delta L({\mathbf{\Psi}})}{\delta \, {\mathbf{\Psi}}} =  {\mathbf{\Psi}} + \lambda_1 \cdot  \sum_{i,j} {\mathbf{g}(t_i)}   {\mathbf{k}(x_j)}^\mathsf{T} v_{ij} +
+r \cdot \lambda_2 \cdot ( \mathbf{G}^2\,\, {\mathbf{\Psi}} - \mathbf{G} \textbf{B}) 
+%\end{split}
+\label{eq:grd}
+\end{equation}
+\normalsize
+where \small$v_{ij} = - 2 \cdot max(0, (l-\textbf{g}(t_i)^\mathsf{T}\, {\mathbf{\Psi}}\, \textbf{k}(x_j) )\,$\normalsize if \small$i\,$\normalsize and \small$j\,$\normalsize correspond to the same class, \small$2 \cdot max(0, (\textbf{g}(t_i)^\mathsf{T}\, {\mathbf{\Psi}}\, \textbf{k}(x_j) -u )\,$\normalsize otherwise. Another approach that can be used to minimize \small$L({\mathbf{\Psi}})\,$\normalsize is through alternating projection using Bregman algorithm \cite{bregman97}, where \small${\mathbf{\Psi}}\,$\normalsize is updated by a single constraint every iteration.
+
+
+
+\subsection{Kernel Classifier Prediction}
+We study two ways to infer the final kernel-classifier prediction. (1) Direct Kernel Domain Transfer Prediction, denoted by ``DT-kernel'', (2) One-class SVM adjusted DT Prediction, denoted by ``SVM-DT kernel''. Hyper-parameter selection is attached in the supplementary materials. The source code is available here 
+\footnotesize{\url{https://sites.google.com/site/mhelhoseiny/computer-vision-projects/write_kernel_classifier}}.\normalsize  
+
+\medskip
+\noindent \textbf{Direct Domain Transfer (DT) Prediction:} By construction a classifier of an unseen class can be directly computed from our trained domain transfer model as follows
+\small
+\begin{equation}
+\centering
+\begin{split}
+\Phi(t_*) = \tilde{\boldsymbol{\beta}}_{DT}(t_*) = {\mathbf{\Psi}^*}^\textsf{T} \, \mathbf{g}(t_*)
+\end{split}
+\end{equation} 
+\normalsize
+\medskip
+\noindent \textbf{One-class-SVM adjusted DT (SVM-DT) Prediction:} 
+In order to increase separability against seen classes, we adopted the inverse of the idea of the one class kernel-svm, whose main idea is to build a confidence function that takes only positive examples of the  class. Our setting is the opposite scenario; seen examples are negative examples of the unseen class.
+In order introduce our proposed adjustment method, we  start by presenting the one-class SVM objective function. The  Lagrangian dual  of the one-class SVM~\cite{oneclasssvm07} can be written as
+\small
+\begin{equation}
+\label{eq:1class}
+\small
+\begin{split}
+{\boldsymbol{\beta}}^*_{+} =  &   \underset{\boldsymbol{\beta}}{\operatorname{argmin }}\big[    \boldsymbol{\beta}^\textsf{T} \mathbf{K^{' }}\boldsymbol{\beta} - \boldsymbol{\beta}^T \mathbf{a} \big]\\
+&s.t.: \boldsymbol{\beta}^T \mathbf{1} = 1,  0 \le \boldsymbol{\beta}_i \le C; i = 1 \cdots N   \\
+%& C  \text{: hyper-parameter},\\ 
+\end{split}
+\end{equation}
+\normalsize
+where \small$\mathbf{K^{' }}\,$\normalsize is an \small$N \times N\,$\normalsize matrix, \small$\mathbf{K^{' }}(i,j) = k({x}_i, {x}_j)$\normalsize, \small$\forall {x}_i,{x}_j \in \mathcal{S}_x$\normalsize (\ie in the training data), \small$\textbf{a}\,$\normalsize is an \small$N \times 1\,$\normalsize vector, \small$\textbf{a}_i = k({x}_i, {x}_i)$\normalsize, \small$C\,$\normalsize is a hyper-parameter . It is straightforward to see that, if $\beta$ is aimed to be a negative decision function instead, the objective function becomes in the form
+\small
+\begin{equation}
+\label{eq:1classneg}
+\small
+\begin{split}
+{\boldsymbol{\beta}}^*_{-} =  &   \underset{\boldsymbol{\beta}}{\operatorname{argmin }}\big[    \boldsymbol{\beta}^\textsf{T} \mathbf{K^{' }}\boldsymbol{\beta} + \boldsymbol{\beta}^T \mathbf{a} \big]\\
+&s.t.: \boldsymbol{\beta}^T \mathbf{1} = -1, -C \le \boldsymbol{\beta}_i \le 0; i = 1 \cdots N \\
+%& C \text{: hyper-parameter}.\\ 
+\end{split}
+\end{equation}
+\normalsize
+While \small${\boldsymbol{\beta}}^*_{-}  = - {\boldsymbol{\beta}}^*_{+}$\normalsize, the objective function in Eq~\ref{eq:1classneg} of the one-negative class SVM inspires us with the idea to adjust the kernel-classifier parameters to increase separability of the unseen kernel-classifier against the points of the seen classes, which leads to the following objective function 
+\small
+\begin{equation}
+\label{eq:form_kernel}
+\small
+\begin{split}
+\Phi(t_*) = \hat{\boldsymbol{\beta}}(t_*) =  &   \underset{\boldsymbol{\beta}}{\operatorname{argmin }}\big[    \boldsymbol{\beta}^\textsf{T} \mathbf{K^{' }}\boldsymbol{\beta} - \zeta \hat{\boldsymbol{\beta}}_{DT}(t_*)^\textsf{T} \mathbf{K^{'}} \boldsymbol{\beta}   + \boldsymbol{\beta}^T \mathbf{a} \big]\\
+&s.t.:   \boldsymbol{\beta}^T \mathbf{1} = -1, {\hat{\boldsymbol{\beta}}_{DT}}^{\mathsf{T}} \mathbf{K^{' }} \boldsymbol{\beta}> l, -C \le \boldsymbol{\beta}_i \le 0;\forall i \\
+& C, \zeta , l \,  \text{: hyper-parameters},\\ 
+\end{split}
+\end{equation}
+\normalsize
+where  \small$\hat{\boldsymbol{\beta}}_{DT}\,$\normalsize is the first \small$N\,$\normalsize elements in \small$\tilde{\boldsymbol{\beta}}_{DT}(t^*) \in \mathbb{R}^{N+1}$\normalsize, \small$\mathbf{1}\,$\normalsize is an \small$N \times 1\,$\normalsize vector of ones. The objective function, in Eq~\ref{eq:form},  pushes the classifier of the unseen class to be highly correlated with the domain transfer prediction of the kernel classifier, while putting  the points of the seen classes as negative examples. It is not hard to see that Eq~\ref{eq:form_kernel} is a quadratic program in \small$\mathbf{\beta}$\normalsize, which could be solved using any quadratic solver.%new para
+\ignore{In contrast to our formulation, the approaches presented in~\cite{NIPS13DeViSE,NIPS13CMT,Hoseini13} assumes that \small$\mathcal{X} \in R^{d_b}$ and  $\mathcal{E} \in R^{d_E}\,$\normalsize (\ie  vectorized).} It is worth to mention that,  linear classifier prediction in Eq~\ref{eq:form} (best Linear formulation in our results)  predicts  classifiers by solving an optimization problem of size  \small$N+d_v+1\,$\normalsize  variables, \small$d_v+1\,$\normalsize linear-classifier parameters\ignore{, which is the same as the length of the visual feature vector,} and \small$N\,$\normalsize slack variables\ignore{; a similar limitation can be found in~\cite{NIPS13DeViSE,NIPS13CMT} where the architecture depends on the number on visual features}.  In contrast, the kernelized objective function (Eq~\ref{eq:form_kernel}) solves a  quadratic program of only \small$N\,$\normalsize variables, and  predicts a kernel-classifier instead with fewer parameters. Using very high-dimensional features  will not affect the optimization complexity.  \ignore{
+Therefore, it is clear that the kernel formulation is expected to have better generalization properties. In addition, the kernel-approach does not assume that any of \small$\mathcal{V}\,$\normalsize and \small$ \mathcal{T}\,$\normalsize is a vector space.}
+

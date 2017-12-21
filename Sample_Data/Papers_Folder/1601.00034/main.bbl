@@ -1,0 +1,261 @@
+\begin{thebibliography}{41}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ahrens and Dieter(1974)]{ahrens1974computer}
+Joachim~H Ahrens and Ulrich Dieter.
+\newblock Computer methods for sampling from gamma, beta, poisson and bionomial
+  distributions.
+\newblock \emph{Computing}, 12\penalty0 (3):\penalty0 223--246, 1974.
+
+\bibitem[An(1996)]{an1996effects}
+Guozhong An.
+\newblock The effects of adding noise during backpropagation training on a
+  generalization performance.
+\newblock \emph{Neural Computation}, 8\penalty0 (3):\penalty0 643--674, 1996.
+
+\bibitem[Banerjee et~al.(2005)Banerjee, Merugu, Dhillon, and
+  Ghosh]{banerjee2005clustering}
+Arindam Banerjee, Srujana Merugu, Inderjit~S Dhillon, and Joydeep Ghosh.
+\newblock Clustering with bregman divergences.
+\newblock \emph{JMLR}, 6:\penalty0 1705--1749, 2005.
+
+\bibitem[Bengio(2009)]{bengio2009learning}
+Yoshua Bengio.
+\newblock Learning deep architectures for ai.
+\newblock \emph{Foundations and trends in ML}, 2\penalty0 (1), 2009.
+
+\bibitem[Besag(1974)]{besag1974spatial}
+Julian Besag.
+\newblock Spatial interaction and the statistical analysis of lattice systems.
+\newblock \emph{Journal of the Royal Statistical Society. Series B
+  (Methodological)}, pages 192--236, 1974.
+
+\bibitem[Bishop(1995)]{bishop1995training}
+Chris~M Bishop.
+\newblock Training with noise is equivalent to tikhonov regularization.
+\newblock \emph{Neural computation}, 7\penalty0 (1):\penalty0 108--116, 1995.
+
+\bibitem[Bregman(1967)]{bregman1967relaxation}
+Lev~M Bregman.
+\newblock The relaxation method of finding the common point of convex sets and
+  its application to the solution of problems in convex programming.
+\newblock \emph{USSR CMMP}, 7\penalty0 (3):\penalty0 200--217, 1967.
+
+\bibitem[Breuleux et~al.(2011)Breuleux, Bengio, and
+  Vincent]{breuleux2011quickly}
+Olivier Breuleux, Yoshua Bengio, and Pascal Vincent.
+\newblock Quickly generating representative samples from an rbm-derived
+  process.
+\newblock \emph{Neural Computation}, 23\penalty0 (8):\penalty0 2058--2073,
+  2011.
+
+\bibitem[Devroye(1986)]{devroye1986non}
+L.~Devroye.
+\newblock \emph{Non-uniform random variate generation}.
+\newblock Springer-Verlag, 1986.
+\newblock ISBN 9783540963059.
+
+\bibitem[Erhan et~al.(2010)Erhan, Bengio, Courville, Manzagol, Vincent, and
+  Bengio]{erhan2010does}
+Dumitru Erhan, Yoshua Bengio, Aaron Courville, Pierre-Antoine Manzagol, Pascal
+  Vincent, and Samy Bengio.
+\newblock Why does unsupervised pre-training help deep learning?
+\newblock \emph{JMLR}, 11:\penalty0 625--660, 2010.
+
+\bibitem[Freund and Haussler(1994)]{freund1994unsupervised}
+Yoav Freund and David Haussler.
+\newblock \emph{Unsupervised learning of distributions of binary vectors using
+  two layer networks}.
+\newblock Computer Research Laboratory [University of California, Santa Cruz],
+  1994.
+
+\bibitem[Gehler et~al.(2006)Gehler, Holub, and Welling]{gehler2006rate}
+Peter~V Gehler, Alex~D Holub, and Max Welling.
+\newblock The rate adapting poisson model for information retrieval and object
+  recognition.
+\newblock In \emph{Proceedings of the 23rd international conference on Machine
+  learning}, pages 337--344. ACM, 2006.
+
+\bibitem[Goodfellow et~al.(2014)Goodfellow, Pouget-Abadie, Mirza, Xu,
+  Warde-Farley, Ozair, Courville, and Bengio]{goodfellow2014generative}
+Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
+  Sherjil Ozair, Aaron Courville, and Yoshua Bengio.
+\newblock Generative adversarial nets.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  2672--2680, 2014.
+
+\bibitem[Goodfellow et~al.(2013)Goodfellow, Warde-Farley, Mirza, Courville, and
+  Bengio]{goodfellow2013maxout}
+Ian~J Goodfellow, David Warde-Farley, Mehdi Mirza, Aaron Courville, and Yoshua
+  Bengio.
+\newblock Maxout networks.
+\newblock \emph{arXiv preprint arXiv:1302.4389}, 2013.
+
+\bibitem[Helmbold et~al.(1999)Helmbold, Kivinen, and
+  Warmuth]{helmbold1999relative}
+David~P Helmbold, Jyrki Kivinen, and Manfred~K Warmuth.
+\newblock Relative loss bounds for single neurons.
+\newblock \emph{Neural Networks, IEEE Transactions on}, 10\penalty0
+  (6):\penalty0 1291--1304, 1999.
+
+\bibitem[Hinton(2002)]{hinton2002training}
+Geoffrey Hinton.
+\newblock Training products of experts by minimizing contrastive divergence.
+\newblock \emph{Neural computation}, 14\penalty0 (8):\penalty0 1771--1800,
+  2002.
+
+\bibitem[Hinton et~al.(2006)Hinton, Osindero, and Teh]{hinton2006fast}
+Geoffrey Hinton, Simon Osindero, and Yee-Whye Teh.
+\newblock A fast learning algorithm for deep belief nets.
+\newblock \emph{Neural computation}, 18\penalty0 (7):\penalty0 1527--1554,
+  2006.
+
+\bibitem[Hull(1994)]{hull1994database}
+Jonathan~J Hull.
+\newblock A database for handwritten text recognition research.
+\newblock \emph{Pattern Analysis and Machine Intelligence, IEEE Transactions
+  on}, 16\penalty0 (5):\penalty0 550--554, 1994.
+
+\bibitem[Kingma and Welling(2013)]{kingma2013auto}
+Diederik~P Kingma and Max Welling.
+\newblock Auto-encoding variational bayes.
+\newblock \emph{arXiv preprint arXiv:1312.6114}, 2013.
+
+\bibitem[Knuth(1969)]{knuth1969seminumerical}
+Donald~E Knuth.
+\newblock Seminumerical algorithms. the art of computer programming, 1969.
+
+\bibitem[LeCun et~al.(1998)LeCun, Bottou, Bengio, and
+  Haffner]{lecun1998gradient}
+Yann LeCun, L{\'e}on Bottou, Yoshua Bengio, and Patrick Haffner.
+\newblock Gradient-based learning applied to document recognition.
+\newblock \emph{Proceedings of the IEEE}, 86\penalty0 (11):\penalty0
+  2278--2324, 1998.
+
+\bibitem[LeCun et~al.(2004)LeCun, Huang, and Bottou]{lecun2004learning}
+Yann LeCun, Fu~Jie Huang, and Leon Bottou.
+\newblock Learning methods for generic object recognition with invariance to
+  pose and lighting.
+\newblock In \emph{CVPR, 2004}, volume~2, pages II--97, 2004.
+
+\bibitem[LeCun et~al.(2015)LeCun, Bengio, and Hinton]{lecun2015deep}
+Yann LeCun, Yoshua Bengio, and Geoffrey Hinton.
+\newblock Deep learning.
+\newblock \emph{Nature}, 521\penalty0 (7553):\penalty0 436--444, 2015.
+
+\bibitem[Lee et~al.(2009)Lee, Grosse, Ranganath, and Ng]{lee2009convolutional}
+Honglak Lee, Roger Grosse, Rajesh Ranganath, and Andrew~Y Ng.
+\newblock Convolutional deep belief networks for scalable unsupervised learning
+  of hierarchical representations.
+\newblock In \emph{Proceedings of the 26th Annual International Conference on
+  Machine Learning}, pages 609--616. ACM, 2009.
+
+\bibitem[Marks and Movellan(2001)]{marks2001diffusion}
+Tim~K Marks and Javier~R Movellan.
+\newblock Diffusion networks, product of experts, and factor analysis.
+\newblock In \emph{Proc. Int. Conf. on Independent Component Analysis}, pages
+  481--485, 2001.
+
+\bibitem[Martens(2010)]{martens2010deep}
+James Martens.
+\newblock Deep learning via hessian-free optimization.
+\newblock In \emph{ICML-10}, pages 735--742, 2010.
+
+\bibitem[McCullagh et~al.(1989)McCullagh, Nelder, and
+  McCullagh]{mccullagh1989generalized}
+Peter McCullagh, John~A Nelder, and P~McCullagh.
+\newblock \emph{Generalized linear models}, volume~2.
+\newblock Chapman and Hall London, 1989.
+
+\bibitem[Nair and Hinton(2010)]{nair2010rectified}
+Vinod Nair and Geoffrey~E Hinton.
+\newblock Rectified linear units improve restricted boltzmann machines.
+\newblock In \emph{ICML-10}, pages 807--814, 2010.
+
+\bibitem[Netzer et~al.(2011)Netzer, Wang, Coates, Bissacco, Wu, and
+  Ng]{netzer2011reading}
+Yuval Netzer, Tao Wang, Adam Coates, Alessandro Bissacco, Bo~Wu, and Andrew~Y
+  Ng.
+\newblock Reading digits in natural images with unsupervised feature learning.
+\newblock In \emph{NIPS workshop}, volume 2011, page~5. Granada, Spain, 2011.
+
+\bibitem[Olshausen and Field(1997)]{olshausen1997sparse}
+Bruno~A Olshausen and David~J Field.
+\newblock Sparse coding with an overcomplete basis set: A strategy employed by
+  v1?
+\newblock \emph{Vision research}, 37\penalty0 (23):\penalty0 3311--3325, 1997.
+
+\bibitem[Rezende et~al.(2014)Rezende, Mohamed, and
+  Wierstra]{rezende2014stochastic}
+Danilo~Jimenez Rezende, Shakir Mohamed, and Daan Wierstra.
+\newblock Stochastic backpropagation and approximate inference in deep
+  generative models.
+\newblock \emph{arXiv preprint arXiv:1401.4082}, 2014.
+
+\bibitem[Salakhutdinov and Hinton(2009)]{salakhutdinov2009deep}
+Ruslan Salakhutdinov and Geoffrey~E Hinton.
+\newblock Deep boltzmann machines.
+\newblock In \emph{International Conference on Artificial Intelligence and
+  Statistics}, pages 448--455, 2009.
+
+\bibitem[Salakhutdinov and Murray(2008)]{salakhutdinov2008quantitative}
+Ruslan Salakhutdinov and Iain Murray.
+\newblock On the quantitative analysis of deep belief networks.
+\newblock In \emph{ICML-08}, pages 872--879. ACM, 2008.
+
+\bibitem[Smolensky(1986)]{smolensky1986information}
+Paul Smolensky.
+\newblock Information processing in dynamical systems: Foundations of harmony
+  theory.
+\newblock 1986.
+
+\bibitem[Sutskever et~al.(2013)Sutskever, Martens, Dahl, and
+  Hinton]{sutskever2013importance}
+Ilya Sutskever, James Martens, George Dahl, and Geoffrey Hinton.
+\newblock On the importance of initialization and momentum in deep learning.
+\newblock In \emph{ICML-13}, pages 1139--1147, 2013.
+
+\bibitem[Tieleman(2008)]{tieleman2008training}
+Tijmen Tieleman.
+\newblock Training restricted boltzmann machines using approximations to the
+  likelihood gradient.
+\newblock In \emph{Proceedings of the 25th international conference on Machine
+  learning}, pages 1064--1071. ACM, 2008.
+
+\bibitem[Tieleman and Hinton(2009)]{tieleman2009using}
+Tijmen Tieleman and Geoffrey Hinton.
+\newblock Using fast weights to improve persistent contrastive divergence.
+\newblock In \emph{Proceedings of the 26th Annual International Conference on
+  Machine Learning}, pages 1033--1040. ACM, 2009.
+
+\bibitem[Vincent et~al.(2008)Vincent, Larochelle, Bengio, and
+  Manzagol]{vincent2008extracting}
+Pascal Vincent, Hugo Larochelle, Yoshua Bengio, and Pierre-Antoine Manzagol.
+\newblock Extracting and composing robust features with denoising autoencoders.
+\newblock In \emph{ICML-08}, pages 1096--1103, 2008.
+
+\bibitem[Welling et~al.(2002)Welling, Osindero, and
+  Hinton]{welling2002learning}
+Max Welling, Simon Osindero, and Geoffrey~E Hinton.
+\newblock Learning sparse topographic representations with products of
+  student-t distributions.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1359--1366, 2002.
+
+\bibitem[Welling et~al.(2004)Welling, Rosen-Zvi, and
+  Hinton]{welling2004exponential}
+Max Welling, Michal Rosen-Zvi, and Geoffrey~E Hinton.
+\newblock Exponential family harmoniums with an application to information
+  retrieval.
+\newblock In \emph{NIPS}, pages 1481--1488, 2004.
+
+\bibitem[Yang et~al.(2012)Yang, Allen, Liu, and Ravikumar]{yang2012graphical}
+Eunho Yang, Genevera Allen, Zhandong Liu, and Pradeep~K Ravikumar.
+\newblock Graphical models via generalized linear models.
+\newblock In \emph{NIPS}, pages 1358--1366, 2012.
+
+\end{thebibliography}

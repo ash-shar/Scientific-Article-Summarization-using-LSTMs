@@ -1,0 +1,133 @@
+\begin{thebibliography}{10}\itemsep=-1pt
+
+\bibitem{Agrawal:1994:FAM:645920.672836}
+R.~Agrawal and R.~Srikant.
+\newblock Fast algorithms for mining association rules in large databases.
+\newblock In {\em 20th International Conference on Very Large Data Bases},
+  pages 487--499, 1994.
+
+\bibitem{ACE}
+e.~a. Christopher~Walker.
+\newblock Ace 2005 multilingual training corpus.
+\newblock In {\em Lingusitic Data Consortium}, 2006.
+
+\bibitem{deng2009imagenet}
+J.~Deng, W.~Dong, R.~Socher, L.-J. Li, K.~Li, and L.~Fei-Fei.
+\newblock Imagenet: A large-scale hierarchical image database.
+\newblock In {\em IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pages 248--255, 2009.
+
+\bibitem{doersch2013mid}
+C.~Doersch, A.~Gupta, and A.~A. Efros.
+\newblock Mid-level visual element discovery as discriminative mode seeking.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  pages 494--502, 2013.
+
+\bibitem{frome2013devise}
+A.~Frome, G.~S. Corrado, J.~Shlens, S.~Bengio, J.~Dean, T.~Mikolov, et~al.
+\newblock Devise: A deep visual-semantic embedding model.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  pages 2121--2129, 2013.
+
+\bibitem{han2000mining}
+J.~Han, J.~Pei, and Y.~Yin.
+\newblock Mining frequent patterns without candidate generation.
+\newblock In {\em ACM SIGMOD Record}, pages 1--12, 2000.
+
+\bibitem{juneja2013blocks}
+M.~Juneja, A.~Vedaldi, C.~Jawahar, and A.~Zisserman.
+\newblock Blocks that shout: Distinctive parts for scene classification.
+\newblock In {\em IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pages 923--930, 2013.
+
+\bibitem{Alexnet}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  pages 1097--1105. 2012.
+
+\bibitem{li2010object}
+L.-J. Li, H.~Su, L.~Fei-Fei, and E.~P. Xing.
+\newblock Object bank: A high-level image representation for scene
+  classification \& semantic feature sparsification.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  pages 1378--1386, 2010.
+
+\bibitem{li2013harvesting}
+Q.~Li, J.~Wu, and Z.~Tu.
+\newblock Harvesting mid-level visual concepts from large-scale internet
+  images.
+\newblock In {\em IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pages 851--858, 2013.
+
+\bibitem{LiLSH15CVPR}
+Y.~Li, L.~Liu, C.~Shen, and A.~van~den Hengel.
+\newblock Mid-level deep pattern mining.
+\newblock {\em IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pages 971--980, 2015.
+
+\bibitem{MSCoco}
+T.-Y. Lin, M.~Maire, S.~Belongie, J.~Hays, P.~Perona, D.~Ramanan,
+  P.~Doll{\'a}r, and C.~L. Zitnick.
+\newblock Microsoft coco: Common objects in context.
+\newblock In {\em European Conference on Computer Vision (ECCV)}, 2014.
+
+\bibitem{Lowe:2004:DIF:993451.996342}
+D.~G. Lowe.
+\newblock Distinctive image features from scale-invariant keypoints.
+\newblock {\em Int. J. Comput. Vision}, 60(2):91--110, Nov. 2004.
+
+\bibitem{mao2014explain}
+J.~Mao, W.~Xu, Y.~Yang, J.~Wang, and A.~L. Yuille.
+\newblock Explain images with multimodal recurrent neural networks.
+\newblock {\em arXiv preprint arXiv:1410.1090}, 2014.
+
+\bibitem{DBLP:journals/corr/MikolovSCCD13}
+T.~Mikolov, I.~Sutskever, K.~Chen, G.~Corrado, and J.~Dean.
+\newblock Distributed representations of words and phrases and their
+  compositionality.
+\newblock {\em Computing Research Repository (CoRR)}, abs/1310.4546, 2013.
+
+\bibitem{10.1109/CVPRW.2009.5206537}
+A.~Quattoni and A.~Torralba.
+\newblock Recognizing indoor scenes.
+\newblock {\em IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pages 413--420, 2009.
+
+\bibitem{Simonyan14c}
+K.~Simonyan and A.~Zisserman.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock {\em Computing Research Repository (CoRR)}, abs/1409.1556, 2014.
+
+\bibitem{singh2012unsupervised}
+S.~Singh, A.~Gupta, and A.~Efros.
+\newblock Unsupervised discovery of mid-level discriminative patches.
+\newblock {\em European Conference on Computer Vision (ECCV)}, pages 73--86,
+  2012.
+
+\bibitem{sun2013learning}
+J.~Sun and J.~Ponce.
+\newblock Learning discriminative part detectors for image classification and
+  cosegmentation.
+\newblock In {\em IEEE International Conference on Computer Vision (ICCV)},
+  pages 3400--3407, 2013.
+
+\bibitem{TorresaniSzummerFitzgibbon10}
+L.~Torresani, M.~Szummer, and A.~Fitzgibbon.
+\newblock Efficient object category recognition using classemes.
+\newblock In {\em European Conference on Computer Vision (ECCV)}, pages
+  776--789, 2010.
+
+\bibitem{yuan2007spatial}
+J.~Yuan and Y.~Wu.
+\newblock Spatial random partition for common visual pattern discovery.
+\newblock In {\em IEEE International Conference on Computer Vision (ICCV)},
+  pages 1--8, 2007.
+
+\bibitem{zhang2014scalable}
+W.~Zhang, H.~Li, C.-W. Ngo, and S.-F. Chang.
+\newblock Scalable visual instance mining with threads of features.
+\newblock In {\em ACM International Conference on Multimedia}, pages 297--306,
+  2014.
+
+\end{thebibliography}

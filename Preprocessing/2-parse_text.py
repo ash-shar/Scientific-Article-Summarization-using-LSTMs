@@ -7,21 +7,21 @@ import re
 import sys
 
 
-math = sys.argv[1]
+# math = sys.argv[1]
 
-basepath_orig = "/home/du3/13CS30043/SNLP/Dataset/Papers_Text_New_Cat/"
+basepath_orig = sys.argv[1]
 
-destpath_new = "/home/du3/13CS30043/SNLP/Dataset/Papers_Text_Without_Eq_Cat/"
+destpath_new = sys.argv[2]
 
-basepath = "/home/du3/13CS30043/SNLP/Dataset/Papers_Text_Without_Eq_Cat/"
-destpath = "/home/du3/13CS30043/SNLP/Dataset/all-parsed-papers-category.txt"
+basepath = destpath_new
+destpath = sys.argv[3]
 
 
-symbol_path = os.path.join(os.path.dirname(__file__),"Symbol_Files/symbols.txt")
+symbol_path = "Symbol_Files/symbols.txt"
 
-symbol_1_path = os.path.join(os.path.dirname(__file__),"Symbol_Files/symbols_1.txt")
+symbol_1_path = "Symbol_Files/symbols_1.txt"
 
-binary_path = os.path.join(os.path.dirname(__file__),"Symbol_Files/binary.txt")
+binary_path = "Symbol_Files/binary.txt"
 
 
 def remove_math():
@@ -121,8 +121,10 @@ def remove_math():
 
 def main():
 
-	if math == "1":
-		remove_math()
+	if not os.path.exists(destpath_new):
+		os.makedirs(destpath_new)
+
+	remove_math()
 
 	
 	files = os.listdir(basepath)

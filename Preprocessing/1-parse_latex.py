@@ -10,12 +10,17 @@ from plasTeX.TeX import TeX
 from plasTeX.Renderers.XHTML import Renderer
 
 # basepath = "/home/du3/13CS30043/Papers_folder/"
-basepath = "/home/du3/13CS30043/SNLP/Dataset/Papers_Folder_Cat/"
-destpath = "/home/du3/13CS30043/SNLP/Dataset/Papers_Text_New_Cat/"
+basepath = sys.argv[1]
+destpath = sys.argv[2]
+
+
 
 def main():
 
 	folders = os.listdir(basepath)
+
+	if not os.path.exists(destpath):
+		os.makedirs(destpath)
 
 	err_cnt = 0
 
@@ -47,7 +52,7 @@ def main():
 				print(foldername,filename)
 		print(text,file=destfile)
 
-	print("Error",err_cnt)
+	print("Parsing Complete")
 				
 
 

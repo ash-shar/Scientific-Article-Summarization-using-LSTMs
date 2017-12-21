@@ -1,8 +1,9 @@
 import json
-
+import os
+import sys
 
 papers=[]
-train=open('all-parsed-papers-category.txt','r+')
+train=open(sys.argv[1],'r+')
 
 for line in train:
 
@@ -53,7 +54,14 @@ for paper in papers:
 	
 	paper_data=paper_data.encode('utf-8')
 	paper_data=paper_data.replace("\n"," ")
-	data_input=open('./data-cat-all/input/'+paper['id'],'w+')
-	data_model=open('./data-cat-all/model/'+paper['id'],'w+')
+
+	if not os.path.exists(sys.argv[2]+"input/"):
+		os.makedirs(sys.argv[2]+"input/")
+
+	if not os.path.exists(sys.argv[2]+"model/"):
+		os.makedirs(sys.argv[2]+"model/")
+
+	data_input=open(sys.argv[2]+'input/'+paper['id'],'w+')
+	data_model=open(sys.argv[2]+'model/'+paper['id'],'w+')
 	print>> data_input,paper_data
 	print>> data_model,paper['sum']

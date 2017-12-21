@@ -10,7 +10,7 @@ import multiprocessing
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
-file_path = "../Dataset/all-parsed-papers-category.txt"
+file_path = "../Sample_Data/Output/all-parsed-papers-category.txt"
 
 
 itr_no = 0

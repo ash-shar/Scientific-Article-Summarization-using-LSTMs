@@ -10,7 +10,7 @@ import multiprocessing
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
-file_path = "../Sample_Data/Output/all-parsed-papers-category.txt"
+file_path = sys.argv[1]+"/all-parsed-papers-category.txt"
 
 
 itr_no = 0
@@ -300,11 +300,11 @@ def train_abstract(para = False, algo = "DM"):
 
 def main():
 
-	abs_or_article = sys.argv[1]
+	abs_or_article = sys.argv[2]
 
-	s_or_p = sys.argv[2]
+	s_or_p = "p"
 
-	DM_or_DBOW = sys.argv[3]
+	DM_or_DBOW = sys.argv[2]
 
 
 	if abs_or_article == "abs":

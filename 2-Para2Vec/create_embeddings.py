@@ -226,13 +226,13 @@ def  train_sentences(algo = "DM"):
 	if algo == "DM":
 		model_DM = gensim.models.doc2vec.Doc2Vec(sentences, size = 300, window = 8, min_count=1, workers=multiprocessing.cpu_count(), iter = 10,  dm = 1, negative=10)
 		print("Model sentences_DM Trained")
-		model_DM.save("Models_New/sentences_DM.doc2vec")
+		model_DM.save("Para2Vec_Models/sentences_DM.doc2vec")
 		print("Model sentences_DM saved")
 
 	elif algo == "DBOW":
 		model_DBOW = gensim.models.doc2vec.Doc2Vec(sentences, size = 300, window = 8, min_count=1, workers=multiprocessing.cpu_count(), iter = 10,  dm = 0, negative=10)
 		print("Model sentences_DBOW Trained")
-		model_DBOW.save("Models_New/sentences_DBOW.doc2vec")
+		model_DBOW.save("Para2Vec_Models/sentences_DBOW.doc2vec")
 		print("Model sentences_DBOW saved")
 
 def  train_paragraph(algo = "DM"):
@@ -241,13 +241,13 @@ def  train_paragraph(algo = "DM"):
 	if algo == "DM":
 		model_DM = gensim.models.doc2vec.Doc2Vec(paragraphs, size = 400, window = 10, min_count=1, workers=multiprocessing.cpu_count(), iter = 10,  dm = 1, negative=10)
 		print("Model paragraphs_DM Trained")
-		model_DM.save("Models_New/paragraph_DM.doc2vec")
+		model_DM.save("Para2Vec_Models/paragraph_DM.doc2vec")
 		print("Model paragraphs_DM saved")
 
 	elif algo == "DBOW":
 		model_DBOW = gensim.models.doc2vec.Doc2Vec(paragraphs, size = 400, window = 10, min_count=1, workers=multiprocessing.cpu_count(), iter = 10,  dm = 0, negative=10)
 		print("Model paragraph_DBOW Trained")
-		model_DBOW.save("Models_New/paragraph_DBOW.doc2vec")
+		model_DBOW.save("Para2Vec_Models/paragraph_DBOW.doc2vec")
 		print("Model paragraphs_DBOW saved")
 
 
@@ -257,7 +257,7 @@ def train_abstract(para = False, algo = "DM"):
 		abs_paras = LabeledAbstractParagraph(file_path)
 
 		if algo == "DM":
-			fname = "Models_New/paragraph_"+algo+".doc2vec"
+			fname = "Para2Vec_Models/paragraph_"+algo+".doc2vec"
 			model_DM = gensim.models.doc2vec.Doc2Vec.load(fname)
 			print("abs para DM loaded")
 			model_DM.train(abs_paras)
@@ -265,7 +265,7 @@ def train_abstract(para = False, algo = "DM"):
 			model_DM.save(fname)
 			print("abs para DM saved")
 		elif algo == "DBOW":
-			fname = "Models_New/paragraph_"+algo+".doc2vec"
+			fname = "Para2Vec_Models/paragraph_"+algo+".doc2vec"
 			model_DBOW = gensim.models.doc2vec.Doc2Vec.load(fname)
 			print("abs para DBOW loaded")
 			model_DBOW.train(abs_paras)
@@ -280,7 +280,7 @@ def train_abstract(para = False, algo = "DM"):
 		abs_sentences = LabeledAbstractSentence(file_path)
 
 		if algo == "DM":
-			fname = "Models_New/sentences_"+algo+".doc2vec"
+			fname = "Para2Vec_Models/sentences_"+algo+".doc2vec"
 			model_DM = gensim.models.doc2vec.Doc2Vec.load(fname)
 			print("abs sentences DM loaded")
 			model_DM.train(abs_sentences)
@@ -288,7 +288,7 @@ def train_abstract(para = False, algo = "DM"):
 			model_DM.save(fname)
 			print("abs sentences DM saved")
 		elif algo == "DBOW":
-			fname = "Models_New/sentences_"+algo+".doc2vec"
+			fname = "Para2Vec_Models/sentences_"+algo+".doc2vec"
 			model_DBOW = gensim.models.doc2vec.Doc2Vec.load(fname)
 			print("abs sentences DBOW saved")
 			model_DBOW.train(abs_sentences)

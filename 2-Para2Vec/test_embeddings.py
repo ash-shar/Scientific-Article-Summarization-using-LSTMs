@@ -146,11 +146,11 @@ def get_embedding(article_fname, para = True, algo = "DM"):
 
 init()
 
-print(len(dict_paras))
+# print(len(dict_paras))
 
-print(dict_paras['1603.04918.txt'])
-print(len(get_embedding('1603.04918.txt')))
+# print(dict_paras['1603.04918.txt'])
+# print(len(get_embedding('1603.04918.txt')))
 
-print(get_embedding('1603.04918.txt'))
+# print(get_embedding('1603.04918.txt'))
 
 
